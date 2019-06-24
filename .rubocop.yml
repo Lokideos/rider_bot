@@ -1,0 +1,28 @@
+AllCops:
+  DisplayCopNames: true
+  StyleGuideCopsOnly: false
+  Exclude:
+    - '**/bin/**/*'
+    - '**/config/**/*'
+    - '**/log/**/*'
+    - '**/storage/**/*'
+    - '**/tmp/**/*'
+    - '**/vedor/**/'
+    - 'Gemfile'
+    - 'config.ru'
+    - 'Rakefile'
+    - 'db/schema.rb'
+    - 'spec/rails_helper.rb'
+    - 'spec/spec_helper.rb'
+
+Metrics/LineLength:
+  Max: 120
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false

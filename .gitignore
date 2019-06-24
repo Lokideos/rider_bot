@@ -1,0 +1,20 @@
+# Ignore bundler config
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/log/
+/tmp/
+/coverage
+
+/spec/reports/*
+/public/system/*
+
+
+# Ignore local Rubymine settings
+.idea/
+
+# Ignore macos specific files
+.DS_Store
+
+# Ignore environment-specific config
+.env*

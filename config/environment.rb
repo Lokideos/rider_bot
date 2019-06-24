@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'dotenv'
 require_relative '../lib/holy_rider'
 
 unless ENV['RACK_ENV'] == 'production'

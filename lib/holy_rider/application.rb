@@ -8,11 +8,11 @@ module HolyRider
       # setup database
     end
 
-    plugin(:not_found) { { error: "Not found" } }
+    plugin(:not_found) { { error: 'Not found' } }
 
     route do |r|
       r.on 'welcome' do
-        "hello world"
+        'hello world'
       end
     end
   end

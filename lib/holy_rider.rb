@@ -6,7 +6,7 @@ require_relative 'holy_rider/application'
 module HolyRider
   class << self
     def application
-      Application.run.freeze
+      Application.freeze.app
     end
 
     def root

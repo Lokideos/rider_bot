@@ -18,3 +18,9 @@
 
 # Ignore environment-specific config
 .env*
+
+# Ignore local database settings
+config/database.yml
+
+# Ignore docker-compose for now
+docker-compose.yml

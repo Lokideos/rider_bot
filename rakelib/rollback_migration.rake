@@ -17,5 +17,6 @@ namespace :db do
     Sequel.connect(database_url) do |db|
       Sequel::Migrator.run(db, "db/migrations", target: args[:target].to_i)
     end
+    Rake::Task['db:version'].execute
   end
 end

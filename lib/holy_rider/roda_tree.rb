@@ -6,7 +6,7 @@ module HolyRider
 
     route do |r|
       r.root do
-        'asasd'
+        'The RODA root'
       end
 
       r.on 'welcome' do

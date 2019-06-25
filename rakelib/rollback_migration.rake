@@ -10,6 +10,7 @@ namespace :db do
     host = db_config['host']
     port = db_config['port']
 
+    ENV['RACK_ENV'] = 'development' unless ENV['RACK_ENV']
     args.with_defaults(:version => 0)
     Sequel.extension :migration
     Sequel.connect("postgres://#{user}:#{password}@#{host}:#{port}/holy_rider_#{ENV['RACK_ENV']}") do |db|

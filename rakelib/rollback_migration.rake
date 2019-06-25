@@ -12,7 +12,7 @@ namespace :db do
 
     args.with_defaults(:version => 0)
     Sequel.extension :migration
-    Sequel.connect("postgres://#{user}:#{password}@#{host}:#{port}/holy_rider_development") do |db|
+    Sequel.connect("postgres://#{user}:#{password}@#{host}:#{port}/holy_rider_#{ENV['RACK_ENV']}") do |db|
       Sequel::Migrator.run(db, "db/migrations", target: args[:target].to_i)
     end
   end

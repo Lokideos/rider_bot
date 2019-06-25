@@ -1,8 +1,8 @@
-require "sequel/core"
+require 'sequel'
 
 namespace :db do
-  desc "Rollback migration"
-  task :rollback, [:version] do |_task, args|
+  desc "Prints current schema version"
+  task :version do
     database_config = YAML.load_file(File.join(__dir__, '../', 'config', 'database.yml'))
     db_config = database_config['default']
     user = db_config['username']
@@ -12,10 +12,12 @@ namespace :db do
     database_url = "postgres://#{user}:#{password}@#{host}:#{port}/holy_rider_#{ENV['RACK_ENV']}"
 
     ENV['RACK_ENV'] = 'development' unless ENV['RACK_ENV']
-    args.with_defaults(:version => 0)
     Sequel.extension :migration
-    Sequel.connect(database_url) do |db|
-      Sequel::Migrator.run(db, "db/migrations", target: args[:target].to_i)
-    end
+
+    version = if Sequel.connect(database_url).tables.include?(:schema_info)
+                Sequel.connect(database_url)[:schema_info].first[:version]
+              end || 0
+
+    puts "Schema Version: #{version}"
   end
 end

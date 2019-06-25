@@ -11,7 +11,8 @@ namespace :db do
     host = db_config['host']
     port = db_config['port']
     names = database_config.values[1..-1].map { |config| config['database'] }
-    Sequel.connect("postgres://#{user}:#{password}@#{host}:#{port}") do |db|
+    database_url = "postgres://#{user}:#{password}@#{host}:#{port}"
+    Sequel.connect(database_url) do |db|
       names.each do |name|
         db.execute "DROP DATABASE #{name}"
       end

@@ -9,11 +9,13 @@ namespace :db do
     password = db_config['password']
     host = db_config['host']
     port = db_config['port']
+    database_url = "postgres://#{user}:#{password}@#{host}:#{port}/holy_rider_#{ENV['RACK_ENV']}"
 
+    ENV['RACK_ENV'] = 'development' unless ENV['RACK_ENV']
     Sequel.extension :migration
     version = args[:version].to_i if args[:version]
 
-    Sequel.connect("postgres://#{user}:#{password}@#{host}:#{port}/holy_rider_#{ENV['RACK_ENV']}") do |db|
+    Sequel.connect(database_url) do |db|
       Sequel::Migrator.run(db, "db/migrations", target: version)
     end
   end

@@ -5,7 +5,7 @@ namespace :db do
   desc 'Create database'
   task :create do
     database_config = YAML.load_file(File.join(__dir__, '../', 'config', 'database.yml'))
-    db_config = database_config.values[0]
+    db_config = database_config['default']
     user = db_config['username']
     password = db_config['password']
     host = db_config['host']

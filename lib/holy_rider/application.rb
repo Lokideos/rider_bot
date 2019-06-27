@@ -22,7 +22,7 @@ module HolyRider
     end
 
     def call(env)
-      RodaTree.call(env)
+      HolyRider::RodaTree.call(env)
     end
 
     def setup_database
@@ -32,9 +32,9 @@ module HolyRider
     end
 
     def setup_routing_tree
-      return RodaTree.freeze.app if ENV['RACK_ENV'] == 'production'
+      return HolyRider::RodaTree.freeze.app if ENV['RACK_ENV'] == 'production'
 
-      RodaTree.app
+      HolyRider::RodaTree.app
     end
 
     private

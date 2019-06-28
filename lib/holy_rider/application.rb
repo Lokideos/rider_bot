@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'roda'
-require 'yaml'
-require 'sequel'
 require 'singleton'
 require_relative 'roda_tree'
+require_relative 'configuration'
 
 module HolyRider
   class Application
@@ -17,6 +16,7 @@ module HolyRider
     end
 
     def bootstrap!
+      @config = HolyRider::Configuration.instance.config
       setup_database
       setup_routing_tree
     end
@@ -26,9 +26,7 @@ module HolyRider
     end
 
     def setup_database
-      database_config = YAML.load_file(HolyRider.root.join('config/database.yml'))
-
-      @db = Sequel.connect(generate_db_url(database_config))
+      @db = Sequel.connect(database_url)
     end
 
     def setup_routing_tree
@@ -39,13 +37,10 @@ module HolyRider
 
     private
 
-    def generate_db_url(db_config)
-      config = db_config['default']
-      database_names = db_config.keys
-      index = database_names.find_index(ENV['RACK_ENV'])
-      database = database_names[index]
+    def database_url
+      database = "holy_rider_#{ENV['RACK_ENV']}"
 
-      "postgres://#{config['username']}:#{config['password']}@#{config['host']}:#{config['port']}/#{database}"
+      @config[:database][:database_url] + "/#{database}"
     end
   end
 end

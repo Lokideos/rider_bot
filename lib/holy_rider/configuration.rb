@@ -17,6 +17,7 @@ module HolyRider
 
     def load_configuration
       load_database
+      generate_database_url
     end
 
     def load_database

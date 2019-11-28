@@ -19,11 +19,12 @@ module HolyRider
 
       # TODO: delete telegram routes before release
       r.on 'get_updates' do
-        HolyRider::Service::ChatUpdateService.new.call.to_json
+        HolyRider::Service::Bot::ChatUpdateService.new.call.to_json
       end
 
       r.on 'send_message' do
-        HolyRider::Service::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'], message: 'Test').call.to_json
+        HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
+                                                            message: 'Test').call.to_json
       end
     end
   end

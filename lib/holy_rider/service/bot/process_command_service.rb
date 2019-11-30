@@ -16,8 +16,7 @@ module HolyRider
 
               case command[message_type]['text']
               when '/help'
-                HolyRider::Service::Bot::SendChatMessageService.new(chat_id: @chat_id,
-                                                                    message: 'Список команд:').call
+                HolyRider::Workers::ProcessCommand.perform_async(@chat_id, 'Список команд:')
               end
             end
           end

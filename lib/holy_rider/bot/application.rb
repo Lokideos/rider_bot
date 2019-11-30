@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require 'singleton'
-require_relative '../service/bot/chat_update_service'
-require_relative '../service/bot/send_chat_message_service'
-require_relative '../service/bot/process_command_service'
-require_relative '../service/bot/process_mention_service'
-
 module HolyRider
   module Bot
     class Application
@@ -18,6 +12,7 @@ module HolyRider
       def initialize
         @db = HolyRider::Application.instance.db
         @redis = HolyRider::Application.instance.redis
+        @chat_updates_service = HolyRider::Service::Bot::ChatUpdateService
         clear_last_processed_message
         bot_loop
       end
@@ -85,9 +80,8 @@ module HolyRider
           end
         end
 
-        all_chat_updates.select do |message|
-          message['message']['date'] >= Time.now.to_i
-        end
+        set_last_processed_message(all_chat_updates.last['update_id'])
+        []
       end
     end
   end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sidekiq/web'
+
 module HolyRider
   class RodaTree < Roda
     plugin(:not_found) { { error: 'Not found' } }
@@ -7,6 +9,10 @@ module HolyRider
     route do |r|
       r.root do
         'The RODA root'
+      end
+
+      r.on 'sidekiq' do
+        r.run Sidekiq::Web
       end
 
       r.on 'welcome' do

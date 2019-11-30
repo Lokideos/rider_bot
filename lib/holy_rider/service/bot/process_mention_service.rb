@@ -15,8 +15,7 @@ module HolyRider
               next unless mention.key? message_type
 
               if mention[message_type]['text'].include? 'привет'
-                HolyRider::Service::Bot::SendChatMessageService.new(chat_id: @chat_id,
-                                                                    message: 'Привет, Мастер.').call
+                HolyRider::Workers::ProcessMention.perform_async(@chat_id, 'Привет, Мастер.')
               end
             end
           end

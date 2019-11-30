@@ -4,10 +4,19 @@ require 'roda'
 require 'singleton'
 require 'redis'
 require 'oj'
+require 'sidekiq'
+
 require_relative 'roda_tree'
 require_relative 'configuration'
 require_relative 'client/telegram'
 require_relative 'bot'
+require_relative 'bot/application'
+require_relative 'workers/process_command'
+require_relative 'workers/process_mention'
+require_relative 'service/bot/chat_update_service'
+require_relative 'service/bot/send_chat_message_service'
+require_relative 'service/bot/process_command_service'
+require_relative 'service/bot/process_mention_service'
 
 module HolyRider
   class Application
@@ -25,14 +34,25 @@ module HolyRider
       @config = HolyRider::Configuration.instance.config
       setup_database
       setup_redis
+      setup_telegram_bot
       case app_type
-      when 'bots'
-        setup_telegram_bot
+      when 'bot'
         HolyRider::Bot.application
+      when 'background'
+        setup_background_backbone
       else
-        # TODO: remove setup bot from web before release
-        setup_telegram_bot
         setup_routing_tree
+      end
+    end
+
+    def setup_background_backbone
+      redis_url = "redis://#{ENV['REDIS_HOST']}:#{ENV['REDIS_PORT']}/1"
+      Sidekiq.options[:dead_max_jobs] = 1_500_000
+      Sidekiq.configure_client do |config|
+        config.redis = { url: redis_url, db: 'background_backbone_db', network_timeout: 15 }
+      end
+      Sidekiq.configure_server do |config|
+        config.redis = { url: redis_url, db: 'background_backbone_db', network_timeout: 15 }
       end
     end
 

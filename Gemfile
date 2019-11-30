@@ -10,6 +10,7 @@ gem 'pg',     '~> 1.1.4'
 gem 'telegram-bot', '~> 0.14'
 gem 'oj', '~> 3.9.2'
 gem 'redis', '~> 4.1.3'
+gem "sidekiq", '~> 6.0.3'
 
 group :development, :test do
   gem 'pry-byebug',      '~> 3.7.0'

@@ -19,20 +19,17 @@ module HolyRider
 
       def bot_loop
         loop do
-          chat_updates = get_chat_updates
+          new_messages = chat_updates
 
-          unless chat_updates.any?
+          unless new_messages.any?
             p 'No updates'
             next
           end
 
-          commands = get_commands(chat_updates)
-          mentions = get_mentions(chat_updates)
+          HolyRider::Service::Bot::ProcessCommandService.new(commands(new_messages)).call
+          HolyRider::Service::Bot::ProcessMentionService.new(mentions(new_messages)).call
 
-          HolyRider::Service::Bot::ProcessCommandService.new(commands).call
-          HolyRider::Service::Bot::ProcessMentionService.new(mentions).call
-
-          set_last_processed_message(chat_updates.last['update_id'])
+          store_last_processed_message(new_messages.last['update_id'])
 
           p 'End of iteration'
         end
@@ -40,13 +37,13 @@ module HolyRider
 
       private
 
-      def get_commands(messages)
+      def commands(messages)
         MESSAGE_TYPES.flat_map do |message_type|
           select_messages_by_type(messages, message_type, 'bot_command')
         end
       end
 
-      def get_mentions(messages)
+      def mentions(messages)
         MESSAGE_TYPES.flat_map do |message_type|
           select_messages_by_type(messages, message_type, 'mention')
         end
@@ -54,13 +51,11 @@ module HolyRider
 
       def select_messages_by_type(messages, type, entity_type)
         messages.select do |message|
-          message.key?(type) && message[type]['entities']&.any? do |entity|
-            entity['type'] == entity_type
-          end
+          message.dig(type, 'entities')&.any? { |entity| entity['type'] == entity_type }
         end
       end
 
-      def set_last_processed_message(update_id)
+      def store_last_processed_message(update_id)
         @redis.set('holy_rider:bot:chat:last_processed_message_id', update_id)
       end
 
@@ -72,15 +67,15 @@ module HolyRider
         @redis.del('holy_rider:bot:chat:last_processed_message_id')
       end
 
-      def get_chat_updates
-        all_chat_updates = @chat_updates_service.new.call['result']
+      def chat_updates
+        all_recent_messages = @chat_updates_service.new.call['result']
         unless last_processed_message_id.zero?
-          return all_chat_updates.select do |message|
+          return all_recent_messages.select do |message|
             message['update_id'] > last_processed_message_id
           end
         end
 
-        set_last_processed_message(all_chat_updates.last['update_id'])
+        store_last_processed_message(all_recent_messages.last['update_id'])
         []
       end
     end

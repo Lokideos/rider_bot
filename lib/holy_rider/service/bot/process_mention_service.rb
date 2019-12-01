@@ -14,9 +14,7 @@ module HolyRider
             HolyRider::Bot::Application::MESSAGE_TYPES.each do |message_type|
               next unless mention.key? message_type
 
-              if mention[message_type]['text'].include? 'привет'
-                HolyRider::Workers::ProcessMention.perform_async(@chat_id, 'Привет, Мастер.')
-              end
+              HolyRider::Workers::ProcessMention.perform_async(@chat_id, mention, message_type)
             end
           end
         end

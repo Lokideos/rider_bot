@@ -5,18 +5,26 @@ require 'singleton'
 require 'redis'
 require 'oj'
 require 'sidekiq'
+require 'typhoeus'
+require 'sequel'
 
 require_relative 'roda_tree'
 require_relative 'configuration'
-require_relative 'client/telegram'
 require_relative 'bot'
 require_relative 'bot/application'
+require_relative 'client/telegram'
+require_relative 'client/psn/auth/access_token'
+require_relative 'client/psn/auth/sso_cookie'
+require_relative 'client/psn/auth/grant_code'
+require_relative 'client/psn/auth/refresh_token'
 require_relative 'workers/process_command'
 require_relative 'workers/process_mention'
 require_relative 'service/bot/chat_update_service'
 require_relative 'service/bot/send_chat_message_service'
 require_relative 'service/bot/process_command_service'
 require_relative 'service/bot/process_mention_service'
+require_relative 'service/psn/initial_authentication_service'
+require_relative 'service/psn/update_access_token_service'
 
 module HolyRider
   class Application
@@ -66,6 +74,8 @@ module HolyRider
 
     def setup_database
       @db = Sequel.connect(database_url)
+      Sequel::Model.plugin :timestamps
+      require_relative 'models/base_model'
     end
 
     def setup_redis

@@ -14,10 +14,7 @@ module HolyRider
             HolyRider::Bot::Application::MESSAGE_TYPES.each do |message_type|
               next unless command.key? message_type
 
-              case command[message_type]['text']
-              when '/help'
-                HolyRider::Workers::ProcessCommand.perform_async(@chat_id, 'Список команд:')
-              end
+              HolyRider::Workers::ProcessCommand.perform_async(@chat_id, command, message_type)
             end
           end
         end

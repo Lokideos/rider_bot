@@ -75,7 +75,7 @@ module HolyRider
           end
         end
 
-        store_last_processed_message(all_recent_messages.last['update_id'])
+        store_last_processed_message(all_recent_messages.last&.dig('update_id'))
         []
       end
     end

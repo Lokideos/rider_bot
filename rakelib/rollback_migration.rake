@@ -9,7 +9,7 @@ namespace :db do
     args.with_defaults(:version => 0)
 
     Sequel.connect(database_url) do |db|
-      Sequel::Migrator.run(db, "db/migrations", target: args[:target].to_i)
+      Sequel::Migrator.run(db, "db/migrations", target: args.version.to_i)
     end
     Rake::Task['db:version'].execute
   end

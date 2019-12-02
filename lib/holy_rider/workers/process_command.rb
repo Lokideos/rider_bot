@@ -39,6 +39,33 @@ module HolyRider
                     else
                       "#{name} не смог аутентифицроваться"
                     end
+        when '/add_player'
+          username = split_message[1]
+          trophy_account = split_message[2]
+          Player.create(telegram_username: username)
+          if trophy_account
+            Player.find(telegram_username: username).update(trophy_account: trophy_account,
+                                                            on_watch: true)
+          end
+          player = Player.find(telegram_username: username)
+          message = "#{username} создан" if player
+        when '/link_player'
+          username = split_message[1]
+          trophy_account = split_message[2]
+          Player.find(telegram_username: username).update(trophy_account: trophy_account,
+                                                          on_watch: true)
+          player = Player.where(telegram_username: username, trophy_account: trophy_account).first
+          message = "Аккаунт для трофеев успешно связан с пользователем #{username}" if player
+        when '/list_players'
+          players = Player.order(:created_at)
+          message = [
+            "Список игроков:\n", "  Ник в Телеграм Аккаунт для трофеев Отслеживание статуса \n"
+          ]
+          players.each_with_index do |player, index|
+            message << "#{index + 1}. #{player.telegram_username} #{player.trophy_account} " \
+                       "#{player.on_watch?}\n"
+          end
+          message = message.join('')
         end
 
         return unless message

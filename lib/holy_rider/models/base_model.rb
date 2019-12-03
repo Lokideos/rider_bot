@@ -3,3 +3,4 @@
 require 'sequel'
 require_relative 'trophy_hunter'
 require_relative 'player'
+require_relative 'game'

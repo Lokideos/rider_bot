@@ -4,6 +4,11 @@ class TrophyHunter < Sequel::Model
   TrophyHunter.plugin :timestamps, update_on_create: true
 
   DEFAULT_TOKEN_EXPIRATION_TIME = 3500
+  dataset_module do
+    def active_hunters
+      where(active: true).all
+    end
+  end
 
   # TODO: change method name to more appropriate one
   def full_authentication(ticket_id, code)

@@ -4,5 +4,6 @@ class Game < Sequel::Model
   Game.plugin :timestamps, update_on_create: true
 
   one_to_many :game_acquisitions
+  one_to_many :trophies
   many_to_many :players, left_key: :game_id, right_key: :player_id, join_table: :game_acquisitions
 end

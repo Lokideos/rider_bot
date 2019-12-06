@@ -5,7 +5,7 @@ module HolyRider
     module Watcher
       class LinkGamesService
         def initialize(player_name:, updates:)
-          @player = Player.find(telegram_username: player_name)
+          @player = Player.find(trophy_account: player_name)
           @updates = updates
         end
 

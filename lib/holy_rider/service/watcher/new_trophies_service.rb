@@ -4,12 +4,13 @@ module HolyRider
   module Service
     module Watcher
       class NewTrophiesService
-        def initialize(player_name:, token:, updates:, hunter_name:, initial: false)
+        def initialize(player_name:, token:, updates:, hunter_name:)
           @player = Player.find(trophy_account: player_name)
           @token = token
           @updates = updates
           @hunter_name = hunter_name
-          @initial = initial
+          @redis = HolyRider::Application.instance.redis
+          @initial = @redis.get("holy_rider:watcher:players:#{player_name}")
         end
 
         def call

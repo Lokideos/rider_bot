@@ -8,7 +8,6 @@ module HolyRider
 
       def perform(player, game, trophy_service_id, initial)
         redis = HolyRider::Application.instance.redis
-        # redis = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'])
         player = Player.find(id: player)
         game = Game.find(id: game)
 
@@ -73,6 +72,8 @@ module HolyRider
                                                           trophy_earning_time,
                                                           initial)
         end
+
+        redis.del("holy_rider:watcher:players:#{player.trophy_account}")
       end
     end
   end

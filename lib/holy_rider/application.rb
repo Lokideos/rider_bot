@@ -62,8 +62,10 @@ module HolyRider
         setup_background_backbone
       when 'watcher'
         HolyRider::Watcher.application
-      else
+      when 'web'
         setup_routing_tree
+      else
+        binding.pry
       end
     end
 

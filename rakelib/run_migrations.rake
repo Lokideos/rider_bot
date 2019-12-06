@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 namespace :db do
-  desc "Run migrations"
+  desc 'Run migrations'
   task :migrate, [:version] do |_task, args|
     Sequel.extension :migration
 
@@ -7,10 +9,8 @@ namespace :db do
     version = args[:version].to_i if args[:version]
 
     Sequel.connect(database_url) do |db|
-      Sequel::Migrator.run(db, "db/migrations", target: version)
+      Sequel::Migrator.run(db, 'db/migrations', target: version)
     end
     Rake::Task['db:version'].execute
   end
 end
-
-

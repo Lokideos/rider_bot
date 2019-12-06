@@ -5,7 +5,7 @@ Sequel.migration do
     create_table :players do
       primary_key :id
       String :telegram_username
-      String :trophy_account
+      String :trophy_account, unique: true
       Boolean :admin
       Boolean :on_watch
       DateTime :created_at

@@ -72,8 +72,10 @@ module HolyRider
                                       token: token,
                                       updates: psn_updates,
                                       hunter_name: hunter_name).call
+            p "Watcher: player #{player} status checked"
           end
-          p 'Watcher: request successful'
+
+          p 'Watcher: all players checked'
         end
       end
 

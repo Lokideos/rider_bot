@@ -39,6 +39,16 @@ module HolyRider
                     else
                       "#{name} не смог аутентифицроваться"
                     end
+        when '/hunter_activate'
+          name = split_message[1]
+          trophy_hunter = TrophyHunter.find(name: name)
+          trophy_hunter.activate
+          message = "#{name} активирован"
+        when '/hunter_deactivate'
+          name = split_message[1]
+          trophy_hunter = TrophyHunter.find(name: name)
+          trophy_hunter.deactivate
+          message = "#{name} деактивирован"
         when '/add_player'
           username = split_message[1]
           trophy_account = split_message[2]

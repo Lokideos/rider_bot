@@ -4,6 +4,7 @@ class TrophyHunter < Sequel::Model
   TrophyHunter.plugin :timestamps, update_on_create: true
 
   DEFAULT_TOKEN_EXPIRATION_TIME = 3500
+
   dataset_module do
     def active_hunters
       where(active: true).all
@@ -24,6 +25,14 @@ class TrophyHunter < Sequel::Model
                                                 DEFAULT_TOKEN_EXPIRATION_TIME,
                                                 access_token)
     access_token
+  end
+
+  def activate
+    update(active: true)
+  end
+
+  def deactivate
+    update(active: false)
   end
 
   def geared_up?

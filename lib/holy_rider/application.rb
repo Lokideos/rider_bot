@@ -73,10 +73,10 @@ module HolyRider
       redis_url = "redis://#{ENV['REDIS_HOST']}:#{ENV['REDIS_PORT']}/1"
       Sidekiq.options[:dead_max_jobs] = 1_500_000
       Sidekiq.configure_client do |config|
-        config.redis = { url: redis_url, db: 'background_backbone_db', network_timeout: 15 }
+        config.redis = { url: redis_url, db: 0, network_timeout: 15 }
       end
       Sidekiq.configure_server do |config|
-        config.redis = { url: redis_url, db: 'background_backbone_db', network_timeout: 15 }
+        config.redis = { url: redis_url, db: 0, network_timeout: 15 }
       end
     end
 
@@ -95,7 +95,7 @@ module HolyRider
     end
 
     def setup_redis
-      @redis = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'])
+      @redis = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'], db: 0)
     end
 
     def setup_routing_tree

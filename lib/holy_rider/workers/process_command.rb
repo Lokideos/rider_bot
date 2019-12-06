@@ -58,7 +58,7 @@ module HolyRider
                                                             on_watch: true)
             redis = HolyRider::Application.instance.redis
             redis.sadd('holy_rider:watcher:players', trophy_account)
-            redis.set("holy_rider:watcher:players:#{trophy_account}", 'initial')
+            redis.set("holy_rider:watcher:players:initial_load:#{trophy_account}", 'initial')
           end
           player = Player.find(telegram_username: username)
           message = "#{username} создан" if player
@@ -70,7 +70,7 @@ module HolyRider
           player = Player.where(telegram_username: username, trophy_account: trophy_account).first
           redis = HolyRider::Application.instance.redis
           redis.sadd('holy_rider:watcher:players', trophy_account)
-          redis.set("holy_rider:watcher:players:#{trophy_account}", 'initial')
+          redis.set("holy_rider:watcher:players:initial_load:#{trophy_account}", 'initial')
           message = "Аккаунт для трофеев успешно связан с пользователем #{username}" if player
         when '/list_players'
           players = Player.order(:created_at)

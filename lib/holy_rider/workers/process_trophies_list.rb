@@ -73,7 +73,7 @@ module HolyRider
                                                           initial)
         end
 
-        redis.del("holy_rider:watcher:players:#{player.trophy_account}")
+        redis.del("holy_rider:watcher:players:initial_load:#{player.trophy_account}")
       end
     end
   end

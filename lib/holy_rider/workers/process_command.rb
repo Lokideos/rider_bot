@@ -46,6 +46,8 @@ module HolyRider
           if trophy_account
             Player.find(telegram_username: username).update(trophy_account: trophy_account,
                                                             on_watch: true)
+            redis = HolyRider::Application.instance.redis
+            redis.sadd('holy_rider:watcher:players', trophy_account)
           end
           player = Player.find(telegram_username: username)
           message = "#{username} создан" if player

@@ -7,11 +7,14 @@ require 'oj'
 require 'sidekiq'
 require 'typhoeus'
 require 'sequel'
+require 'pry-byebug'
 
 require_relative 'roda_tree'
 require_relative 'configuration'
 require_relative 'bot'
 require_relative 'bot/application'
+require_relative 'watcher'
+require_relative 'watcher/application'
 require_relative 'client/telegram'
 require_relative 'client/psn/auth/access_token'
 require_relative 'client/psn/auth/sso_cookie'
@@ -21,12 +24,19 @@ require_relative 'client/psn/trophy/all_trophy_titles'
 require_relative 'client/psn/trophy/game_trophy_titles'
 require_relative 'workers/process_command'
 require_relative 'workers/process_mention'
+require_relative 'workers/process_trophies_list'
+require_relative 'workers/process_trophy'
 require_relative 'service/bot/chat_update_service'
 require_relative 'service/bot/send_chat_message_service'
 require_relative 'service/bot/process_command_service'
 require_relative 'service/bot/process_mention_service'
 require_relative 'service/psn/initial_authentication_service'
 require_relative 'service/psn/update_access_token_service'
+require_relative 'service/psn/request_updates_service'
+require_relative 'service/psn/request_trophies_list_service'
+require_relative 'service/watcher/new_games_service'
+require_relative 'service/watcher/new_trophies_service'
+require_relative 'service/watcher/link_games_service'
 
 module HolyRider
   class Application
@@ -50,6 +60,8 @@ module HolyRider
         HolyRider::Bot.application
       when 'background'
         setup_background_backbone
+      when 'watcher'
+        HolyRider::Watcher.application
       else
         setup_routing_tree
       end

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 namespace :db do
-  desc "Prints current schema version"
+  desc 'Prints current schema version'
   task :version do
     Sequel.extension :migration
 

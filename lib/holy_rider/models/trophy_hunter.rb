@@ -5,6 +5,12 @@ class TrophyHunter < Sequel::Model
 
   DEFAULT_TOKEN_EXPIRATION_TIME = 3500
 
+  dataset_module do
+    def active_hunters
+      where(active: true).all
+    end
+  end
+
   # TODO: change method name to more appropriate one
   def full_authentication(ticket_id, code)
     HolyRider::Service::PSN::InitialAuthenticationService.new(self, ticket_id, code).call
@@ -19,6 +25,14 @@ class TrophyHunter < Sequel::Model
                                                 DEFAULT_TOKEN_EXPIRATION_TIME,
                                                 access_token)
     access_token
+  end
+
+  def activate
+    update(active: true)
+  end
+
+  def deactivate
+    update(active: false)
   end
 
   def geared_up?

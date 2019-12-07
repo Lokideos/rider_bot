@@ -8,8 +8,8 @@ Sequel.migration do
       String :email, unique: true, null: false
       String :password, null: false
       String :app_context, null: false, default: 'inapp_ios'
-      String :client_id, null: false
-      String :client_secret, null: false
+      String :client_id, null: false, unique: true
+      String :client_secret, null: false, unique: true
       String :duid, null: false
       String :state, null: false
       String :scope, null: false

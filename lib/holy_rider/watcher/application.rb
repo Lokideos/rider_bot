@@ -69,7 +69,6 @@ module HolyRider
             @new_games_service.new(player_name: player, token: token, updates: psn_updates).call
             @link_games_service.new(player_name: player, updates: psn_updates).call
             @new_trophies_service.new(player_name: player,
-                                      token: token,
                                       updates: psn_updates,
                                       hunter_name: hunter_name).call
             p "Watcher: player #{player} status checked"
@@ -78,10 +77,6 @@ module HolyRider
           p 'Watcher: all players checked'
         end
       end
-
-      private
-
-      def store_hunter_access_key; end
     end
   end
 end

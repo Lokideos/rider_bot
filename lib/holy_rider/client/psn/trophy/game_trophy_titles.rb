@@ -21,6 +21,20 @@ module HolyRider
               headers: headers
             ).run
 
+            if response.response_code == 429
+              sleep_increment = 0
+              until response.response_code != 429
+                p 'Watcher: gateway timeout - too many requests'
+                sleep_increment += 1
+                sleep(sleep_increment)
+                response = Typhoeus::Request.new(
+                  url,
+                  method: :get,
+                  headers: headers
+                ).run
+              end
+            end
+
             Oj.load(response.response_body, {})['trophies']
           end
 

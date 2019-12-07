@@ -5,22 +5,32 @@ module HolyRider
     module PSN
       module Trophy
         class AllTrophyTitles
-          def initialize(player_name:, token:, icon_size: 'm', limit: 10)
+          def initialize(player_name:, token:, icon_size: 'm', offset: 0, limit: 10)
             @endpoint = ENV['ALL_TROPHY_TITLES_ENDPOINT']
             @player_name = player_name
             @token = token
             @icon_size = icon_size
+            @offset = offset
             @limit = limit
+            redis = HolyRider::Application.instance.redis
+            @initial = redis.get("holy_rider:watcher:players:initial_load:#{player_name}")
+            @limit = 128 if @initial
           end
 
           def request_trophy_list
-            response = Typhoeus::Request.new(
-              url,
-              method: :get,
-              headers: headers
-            ).run
+            response = Typhoeus::Request.new(url, method: :get, headers: headers).run
+            parsed_response = Oj.load(response.response_body, {})
+            return parsed_response unless @initial
 
-            Oj.load(response.response_body, {})
+            until (parsed_response['totalResults'] - @limit - @offset).negative?
+              @offset += @limit
+              next_response = Typhoeus::Request.new(url, method: :get, headers: headers).run
+              next_parsed_response = Oj.load(next_response.response_body, {})
+              parsed_response['trophyTitles'] << next_parsed_response['trophyTitles']
+            end
+            parsed_response['trophyTitles'] = parsed_response['trophyTitles'].flatten
+
+            parsed_response
           end
 
           private
@@ -39,7 +49,7 @@ module HolyRider
               'npLanguage=en&' \
               "iconSize=#{@icon_size}&" \
               'platform=PS3,PSVITA,PS4&' \
-              'offset=0&' \
+              "offset=#{@offset}&" \
               "limit=#{@limit}&" \
               "comparedUser=#{@player_name}"
           end

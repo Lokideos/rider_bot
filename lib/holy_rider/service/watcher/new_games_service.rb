@@ -17,10 +17,12 @@ module HolyRider
 
           new_games_trophy_ids.each do |id|
             new_game = @updates['trophyTitles'].find { |game| game['npCommunicationId'] == id }
+
             extended_trophies_list = @trophies_list_service.new(player_name: @player.trophy_account,
                                                                 token: @token,
                                                                 trophy_service_id: id,
                                                                 extended: true).call
+
             game = Game.create(trophy_service_id: id, title: new_game['trophyTitleName'],
                                platform: new_game['trophyTitlePlatfrom'],
                                icon_url: new_game['trophyTitleIconUrl'])

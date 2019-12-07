@@ -37,10 +37,10 @@ module HolyRider
           token = redis.get("holy_rider:trophy_hunter:#{hunter_name}:access_token")
         end
 
-        @trophies_list_service = HolyRider::Service::PSN::RequestTrophiesListService
-        trophies_list = @trophies_list_service.new(player_name: player.trophy_account,
-                                                   token: token,
-                                                   trophy_service_id: trophy_service_id).call
+        trophies_list_service = HolyRider::Service::PSN::RequestTrophiesListService
+        trophies_list = trophies_list_service.new(player_name: player.trophy_account,
+                                                  token: token,
+                                                  trophy_service_id: trophy_service_id).call
 
         earned_trophies = trophies_list.select { |trophy| trophy.dig('comparedUser', 'earned') }
         earned_trophies_ids = earned_trophies.map { |trophy| trophy['trophyId'] }

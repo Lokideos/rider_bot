@@ -22,10 +22,6 @@ module HolyRider
           end
         end
 
-        redis.setex("holy_rider:watcher:hunters:#{hunter_name}:game_queue:tainted",
-                    HolyRider::Watcher::Application::DEFAULT_TAINT_TIME + rand(1..3),
-                    'tainted')
-
         redis.setex("holy_rider:watcher:hunters:#{hunter_name}:trophy_queue:tainted",
                     HolyRider::Watcher::Application::DEFAULT_TAINT_TIME - rand(3..5),
                     'tainted')
@@ -73,7 +69,12 @@ module HolyRider
                                                           initial)
         end
 
-        redis.del("holy_rider:watcher:players:initial_load:#{player.trophy_account}")
+        redis.srem("holy_rider:watcher:players:initial_load:#{player.trophy_account}:trophies",
+                   trophy_service_id)
+
+        if redis.smembers("holy_rider:watcher:players:initial_load:#{player.trophy_account}:trophies").empty?
+          redis.del("holy_rider:watcher:players:initial_load:#{player.trophy_account}")
+        end
       end
     end
   end

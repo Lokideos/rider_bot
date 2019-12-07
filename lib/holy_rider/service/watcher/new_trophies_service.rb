@@ -6,10 +6,11 @@ module HolyRider
       class NewTrophiesService
         def initialize(player_name:, updates:, hunter_name:)
           @player = Player.find(trophy_account: player_name)
+          @player_name = player_name
           @updates = updates
           @hunter_name = hunter_name
-          redis = HolyRider::Application.instance.redis
-          @initial = redis.get("holy_rider:watcher:players:initial_load:#{player_name}")
+          @redis = HolyRider::Application.instance.redis
+          @initial = @redis.get("holy_rider:watcher:players:initial_load:#{player_name}")
         end
 
         def call
@@ -36,10 +37,15 @@ module HolyRider
             game_acquistion.update(progress: trophy_progress[:progress],
                                    last_updated_date: trophy_progress[:last_updated_date])
 
-            HolyRider::Workers::ProcessTrophiesList.perform_async(@player.id,
-                                                                  game.id,
-                                                                  trophy_progress[:trophy_service_id],
-                                                                  @initial)
+            @redis.sadd("holy_rider:watcher:players:initial_load:#{@player_name}:trophies",
+                        trophy_progress[:trophy_service_id])
+
+            HolyRider::Workers::ProcessTrophiesList.perform_async(
+              @player.id,
+              game.id,
+              trophy_progress[:trophy_service_id],
+              @initial
+            )
           end
         end
       end

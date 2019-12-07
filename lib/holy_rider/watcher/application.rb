@@ -41,6 +41,12 @@ module HolyRider
           end
 
           @redis.smembers('holy_rider:watcher:players').each do |player|
+            if @redis.get("holy_rider:watcher:players:initial_load:#{player}") == 'in_progress'
+              p "Watcher: player #{player} is still in the initial load phase."
+              sleep(0.2)
+              next
+            end
+
             hunter_name = nil
             until hunter_name
               hunter_name = @redis.smembers('holy_rider:watcher:hunters').find do |name|
@@ -56,6 +62,10 @@ module HolyRider
             @redis.setex("holy_rider:watcher:hunters:#{hunter_name}:game_queue:tainted",
                          DEFAULT_TAINT_TIME + rand(1..3),
                          'tainted')
+
+            if @redis.get("holy_rider:watcher:players:initial_load:#{player}")
+              @redis.set("holy_rider:watcher:players:initial_load:#{player}", 'in_progress')
+            end
 
             unless @redis.get("holy_rider:trophy_hunter:#{hunter_name}:access_token")
               hunter = TrophyHunter.find(name: hunter_name)

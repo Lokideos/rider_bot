@@ -24,7 +24,7 @@ module HolyRider
       end
 
       def send_message(chat_id:, message:)
-        chat_bot.send_message(chat_id: chat_id, text: message)
+        chat_bot.send_message(chat_id: chat_id, text: message, parse_mode: 'html')
       end
     end
   end

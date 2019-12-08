@@ -16,10 +16,19 @@ class Game < Sequel::Model
         .limit(1)
         .first
     end
+
+    def find_relevant_game(title)
+      where(title: /.*#{title}*/i)
+        .left_join(:game_acquisitions, game_id: :id)
+        .order(:last_updated_date)
+        .reverse
+        .limit(1)
+        .first
+    end
   end
 
   def self.top_game(title)
-    game = find_game(title)
+    game = find_game(title) || find_relevant_game(title)
     return unless game
 
     game_id = game.values[:game_id]

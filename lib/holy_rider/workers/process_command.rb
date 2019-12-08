@@ -82,6 +82,17 @@ module HolyRider
                        "#{player.on_watch?}\n"
           end
           message = message.join('')
+        when '/find'
+          game_title = split_message[1..-1].join(' ')
+          top = Game.top_game(game_title)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
         end
 
         return unless message

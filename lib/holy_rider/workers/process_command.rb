@@ -242,6 +242,19 @@ module HolyRider
           end
 
           message = message.join
+        when '/me'
+          player = Player.find(telegram_username: command['message']['from']['username'])
+          profile = player.profile
+          trophy_account = player.trophy_account
+          telegram_name = player.telegram_username
+          message = ["<b>Профиль игрока #{trophy_account} (@#{telegram_name})</b>\n"]
+          message << "<code>Количество игр    #{profile[:games].count}</code>\n"
+          message << "<code>Платиновые трофеи #{profile[:trophies][:platinum].count}</code>\n"
+          message << "<code>Золотые трофеи    #{profile[:trophies][:gold].count}</code>\n"
+          message << "<code>Серебряные трофеи #{profile[:trophies][:silver].count}</code>\n"
+          message << "<code>Бронзовые трофеи  #{profile[:trophies][:bronze].count}</code>\n"
+
+          message = message.join
         end
 
         return unless message

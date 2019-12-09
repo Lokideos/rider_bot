@@ -104,7 +104,7 @@ module HolyRider
           return unless games_list
 
           message = []
-          message << "<b>Последние десять найденных игр:</b>\n"
+          message << "<b>Найденные игры:</b>\n"
           games_list.each_with_index do |game, index|
             message << "/#{index + 1} <b>#{game}</b>"
           end

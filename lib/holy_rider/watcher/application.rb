@@ -19,6 +19,7 @@ module HolyRider
         @redis.del('holy_rider:watcher:players')
         @redis.del('holy_rider:watcher:hunters')
         @redis.del('holy_rider:watcher:hunters:tainted')
+        @initial_load = false
         @hunters = TrophyHunter.active_hunters
         @hunters.each do |hunter|
           hunter_name = hunter.name
@@ -65,6 +66,7 @@ module HolyRider
 
             if @redis.get("holy_rider:watcher:players:initial_load:#{player}")
               @redis.set("holy_rider:watcher:players:initial_load:#{player}", 'in_progress')
+              @initial_load = true
             end
 
             unless @redis.get("holy_rider:trophy_hunter:#{hunter_name}:access_token")

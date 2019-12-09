@@ -37,8 +37,17 @@ module HolyRider
             game_acquistion.update(progress: trophy_progress[:progress],
                                    last_updated_date: trophy_progress[:last_updated_date])
 
-            @redis.sadd("holy_rider:watcher:players:initial_load:#{@player_name}:trophies",
-                        trophy_progress[:trophy_service_id])
+            if @initial
+              @redis.sadd("holy_rider:watcher:players:initial_load:#{@player_name}:trophies",
+                          trophy_progress[:trophy_service_id])
+              HolyRider::Workers::InitialProcessTrophiesList.perform_async(
+                @player.id,
+                game.id,
+                trophy_progress[:trophy_service_id],
+                @initial
+              )
+              next
+            end
 
             HolyRider::Workers::ProcessTrophiesList.perform_async(
               @player.id,

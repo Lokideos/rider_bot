@@ -11,7 +11,7 @@ class Game < Sequel::Model
     # TODO: try to combine datasets
     def find_game(title, platform: nil)
       unless platform
-        return where(title: /^#{title}*/i)
+        return where(title: title)
                .left_join(:game_acquisitions, game_id: :id)
                .order(:last_updated_date)
                .reverse
@@ -19,7 +19,7 @@ class Game < Sequel::Model
                .first
       end
 
-      where(title: /^#{title}*/i, platform: platform)
+      where(title: title, platform: platform)
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -34,36 +34,8 @@ class Game < Sequel::Model
         .first
     end
 
-    def find_relevant_game(title, platform: nil)
-      unless platform
-        return where(title: /.*#{title}*/i)
-               .left_join(:game_acquisitions, game_id: :id)
-               .order(:last_updated_date)
-               .reverse
-               .limit(1)
-               .first
-      end
-
-      where(title: /.*#{title}*/i, platform: platform)
-        .left_join(:game_acquisitions, game_id: :id)
-        .order(:last_updated_date)
-        .reverse
-        .limit(1)
-        .first
-    end
-
-    def find_relevant_games(title)
-      where(title: /^#{title}*/i)
-        .left_join(:game_acquisitions, game_id: :id)
-        .order(:last_updated_date)
-        .reverse
-        .limit(10)
-        .map { |record| record.title + " #{record.platform}" }
-    end
-
-    # TODO: rename or combine
-    def find_relevant_games_2(title, limit)
-      where(title: /.*#{title}*/i)
+    def find_games(title, limit: 10)
+      where(title: title)
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -73,10 +45,10 @@ class Game < Sequel::Model
   end
 
   def self.relevant_games(title, message)
-    first_games = find_relevant_games(title).uniq
+    first_games = find_games(/^#{title}*/i).uniq
     second_games = []
     query_size = first_games.size
-    second_games = find_relevant_games_2(title, 10 - query_size).uniq if query_size < 10
+    second_games = find_games(/.*#{title}*/i, limit: 10 - query_size).uniq if query_size < 10
 
     player = message['message']['from']['username']
     redis = HolyRider::Application.instance.redis
@@ -102,11 +74,13 @@ class Game < Sequel::Model
     top_game(game_title, platform: game_platform, exact: true) if game_title
   end
 
+  # TODO: refactoring needed
   def self.top_game(title, platform: nil, exact: false)
     game = if exact
              find_exact_game(title, platform)
            else
-             find_game(title, platform: platform) || find_relevant_game(title, platform: platform)
+             find_game(/^#{title}*/i, platform: platform) ||
+               find_game(/.*#{title}*/i, platform: platform)
            end
     return unless game
 

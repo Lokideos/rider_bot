@@ -45,6 +45,8 @@ class Game < Sequel::Model
   end
 
   def self.relevant_games(title, message)
+    return unless title.length > 1
+
     first_games = find_games(/^#{title}*/i).uniq
     second_games = []
     query_size = first_games.size
@@ -76,6 +78,8 @@ class Game < Sequel::Model
 
   # TODO: refactoring needed
   def self.top_game(title, platform: nil, exact: false)
+    return unless title.length > 1
+
     game = if exact
              find_exact_game(title, platform)
            else

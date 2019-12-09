@@ -25,7 +25,9 @@ require_relative 'client/psn/trophy/game_trophy_titles'
 require_relative 'workers/process_command'
 require_relative 'workers/process_mention'
 require_relative 'workers/process_trophies_list'
+require_relative 'workers/initial_process_trophies_list'
 require_relative 'workers/process_trophy'
+require_relative 'workers/initial_process_trophy'
 require_relative 'service/bot/chat_update_service'
 require_relative 'service/bot/send_chat_message_service'
 require_relative 'service/bot/game_top_service'
@@ -38,6 +40,8 @@ require_relative 'service/psn/request_trophies_list_service'
 require_relative 'service/watcher/new_games_service'
 require_relative 'service/watcher/new_trophies_service'
 require_relative 'service/watcher/link_games_service'
+require_relative 'service/watcher/process_trophies_list_service'
+require_relative 'service/watcher/save_trophy_service'
 
 module HolyRider
   class Application

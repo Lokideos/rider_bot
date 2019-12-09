@@ -70,8 +70,10 @@ module HolyRider
         when '/link_player'
           username = split_message[1]
           trophy_account = split_message[2]
-          Player.find(telegram_username: username).update(trophy_account: trophy_account,
-                                                          on_watch: true)
+          player = Player.find(telegram_username: username)
+          return unless player
+
+          player.update(trophy_account: trophy_account, on_watch: true)
           player = Player.where(telegram_username: username, trophy_account: trophy_account).first
           redis = HolyRider::Application.instance.redis
           redis.sadd('holy_rider:watcher:players', trophy_account)
@@ -238,7 +240,7 @@ module HolyRider
             name = player_trophies[:name]
             name = name[0..11] + '...' if name.length > 12
             message << "<code>#{player_trophies[:name]}" + ' ' * (max_name_length - name.length) +
-              " #{player_trophies[:points]}\n</code>"
+                       " #{player_trophies[:points]}\n</code>"
           end
 
           message = message.join

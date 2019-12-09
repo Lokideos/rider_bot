@@ -2,9 +2,9 @@
 
 module HolyRider
   module Workers
-    class ProcessTrophiesList
+    class InitialProcessTrophiesList
       include Sidekiq::Worker
-      sidekiq_options queue: :trophies, retry: 5, backtrace: 20
+      sidekiq_options queue: :initial_user_data_load, retry: 5, backtrace: 20
 
       def perform(player, game, trophy_service_id, initial)
         HolyRider::Service::Watcher::ProcessTrophiesListService.new(player, game, trophy_service_id,

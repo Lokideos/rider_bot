@@ -10,6 +10,11 @@ module HolyRider
         message_text = command[message_type]['text']
         split_message = message_text.split(' ')
 
+        if split_message.first.include?('@holy_rider_bot')
+          actual_command = split_message.first.split('@').first
+          split_message[0] = actual_command
+        end
+
         case split_message.first
         when '/help'
           message = 'Список команд:'
@@ -85,6 +90,138 @@ module HolyRider
         when '/find'
           game_title = split_message[1..-1].join(' ')
           top = Game.top_game(game_title)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/games'
+          game_title = split_message[1..-1].join(' ')
+          games_list = Game.relevant_games(game_title, command)
+          return unless games_list
+
+          message = []
+          message << "<b>Найденные игры:</b>\n"
+          games_list.each_with_index do |game, index|
+            message << "/#{index + 1} <b>#{game}</b>"
+          end
+
+          message = message.join("\n")
+        when '/1'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/2'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/3'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/4'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/5'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/6'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/7'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/8'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/9'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
+          return unless top
+
+          game_title = "<a href='#{top[:game].icon_url}'>" \
+                       "#{top[:game].title} #{top[:game].platform}</a>"
+          HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
+                                                              message: game_title).call
+
+          message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+        when '/10'
+          index = split_message[0][1..-1]
+          player = command['message']['from']['username']
+          top = Game.find_game_from_cache(player, index)
           return unless top
 
           game_title = "<a href='#{top[:game].icon_url}'>" \

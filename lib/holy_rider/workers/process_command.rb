@@ -230,6 +230,18 @@ module HolyRider
                                                               message: game_title).call
 
           message = HolyRider::Service::Bot::GameTopService.new(top: top).call
+          # TODO: refactoring
+        when '/top'
+          message = ["<b>Топ трофеев:\n\n</b>"]
+          Player.trophy_top.each do |player_trophies|
+            max_name_length = 15
+            name = player_trophies[:name]
+            name = name[0..11] + '...' if name.length > 12
+            message << "<code>#{player_trophies[:name]}" + ' ' * (max_name_length - name.length) +
+              " #{player_trophies[:points]}\n</code>"
+          end
+
+          message = message.join
         end
 
         return unless message

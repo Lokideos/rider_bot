@@ -73,8 +73,13 @@ module HolyRider
             end
 
             token = @redis.get("holy_rider:trophy_hunter:#{hunter_name}:access_token")
-
             psn_updates = @psn_updates_service.new(player_name: player, token: token).call
+
+            if psn_updates.dig('error', 'message') == 'Access token required'
+              p 'Watcher: Refresh token has expired'
+              sleep(0.2)
+              next
+            end
 
             @new_games_service.new(player_name: player, token: token, updates: psn_updates).call
             @link_games_service.new(player_name: player, updates: psn_updates).call

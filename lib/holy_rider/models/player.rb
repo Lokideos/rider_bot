@@ -43,4 +43,20 @@ class Player < Sequel::Model
   def on_watch?
     on_watch
   end
+
+  def trophies_by_type(trophy_type)
+    trophies.select { |trophy| trophy.trophy_type == trophy_type }
+  end
+
+  def profile
+    {
+      trophies: {
+        bronze: trophies_by_type('bronze'),
+        silver: trophies_by_type('silver'),
+        gold: trophies_by_type('gold'),
+        platinum: trophies_by_type('platinum')
+      },
+      games: games
+    }
+  end
 end

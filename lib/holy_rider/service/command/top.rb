@@ -9,6 +9,7 @@ module HolyRider
           @message_type = message_type
         end
 
+        # TODO: refactoring needed
         def call
           message = ['<b>Топ трофеев:</b>']
           Player.trophy_top.each do |player_trophies|

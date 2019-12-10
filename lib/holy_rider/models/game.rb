@@ -3,6 +3,8 @@
 class Game < Sequel::Model
   Game.plugin :timestamps, update_on_create: true
 
+  GAME_CACHE_EXPIRE = 120
+
   one_to_many :game_acquisitions
   one_to_many :trophies
   many_to_many :players, left_key: :game_id, right_key: :player_id, join_table: :game_acquisitions
@@ -56,7 +58,7 @@ class Game < Sequel::Model
     redis = HolyRider::Application.instance.redis
     all_games = (first_games << second_games).flatten.uniq
     all_games.each_with_index do |game_title, index|
-      redis.set("holy_rider:top:#{player}:games:#{index + 1}", game_title)
+      redis.setex("holy_rider:top:#{player}:games:#{index + 1}", GAME_CACHE_EXPIRE, game_title)
       redis.sadd("holy_rider:top:#{player}:games", "holy_rider:top:#{player}:games:#{index + 1}")
     end
 

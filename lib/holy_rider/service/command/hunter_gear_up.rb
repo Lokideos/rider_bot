@@ -10,6 +10,9 @@ module HolyRider
         end
 
         def call
+          player = Player.find(telegram_username: @command[@message_type]['from']['username'])
+          return unless player.admin?
+
           message = @command[@message_type]['text'].split(' ')
           name = message[1]
           ticket_id = message[2]

@@ -10,6 +10,9 @@ module HolyRider
         end
 
         def call
+          player = Player.find(telegram_username: @command[@message_type]['from']['username'])
+          return unless player.admin?
+
           name = @command[@message_type]['text'].split(' ')[1]
           trophy_hunter = TrophyHunter.find(name: name)
           trophy_hunter.activate

@@ -42,6 +42,7 @@ require_relative 'service/watcher/new_trophies_service'
 require_relative 'service/watcher/link_games_service'
 require_relative 'service/watcher/process_trophies_list_service'
 require_relative 'service/watcher/save_trophy_service'
+require_relative 'service/command_service'
 
 module HolyRider
   class Application

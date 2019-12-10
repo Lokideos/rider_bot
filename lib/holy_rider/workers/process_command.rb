@@ -17,7 +17,20 @@ module HolyRider
 
         case split_message.first
         when '/help'
-          message = 'Список команд:'
+          message = ['Список команд:']
+          message << '/hunter_stats - показывает текущих охотников за трофеями'
+          message << '/hunter_credentials [hunter_name] - показывает email и пароль охотника'
+          message << '/hunter_gear_up [ticket_id] [phone_code] - обновляет refresh token'
+          message << '/hunter_activate [hunter_name] - охотник начинает обращаться в PSN'
+          message << '/hunter_deactivate [hunter_name] - охотник перестает обращаться в PSN'
+          message << '/add_player [player_name] [*player_account] - добавляет игрока и связывает его с PSN аккаунтом(опционально)'
+          message << '/link_player [player_name] [player_account] - связывает игрока с PSN аккаунтом'
+          message << '/list_players показывает список всех игроков'
+          message << '/find [game_title] поиск одной игры'
+          message << '/games [game_title] поиск нескольких игр'
+          message << '/top выводит топ по трофеям среди игроков'
+          message << '/me выводит информацию о запросившем игроке'
+          message = message.join("\n")
         when '/hunter_credentials'
           name = split_message[1]
           hunter = TrophyHunter.find(name: name)

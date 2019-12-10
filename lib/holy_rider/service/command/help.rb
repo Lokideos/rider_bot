@@ -10,7 +10,14 @@ module HolyRider
         end
 
         def call
+          player = Player.find(telegram_username: @command[@message_type]['from']['username'])
           message = ['Список команд:']
+          message << '/find [game_title] поиск одной игры'
+          message << '/games [game_title] поиск нескольких игр'
+          message << '/top выводит топ по трофеям среди игроков'
+          message << '/me выводит информацию о запросившем игроке'
+          return [message.join("\n")] unless player.admin?
+
           message << '/hunter_stats - показывает текущих охотников за трофеями'
           message << '/hunter_credentials [hunter_name] - показывает email и пароль охотника'
           message << '/hunter_gear_up [ticket_id] [phone_code] - обновляет refresh token'
@@ -21,14 +28,8 @@ module HolyRider
                      'связывает его с PSN аккаунтом(опционально)'
           message << '/link_player [player_name] [player_account] - связывает игрока с PSN ' \
                      ' аккаунтом'
-          message << '/list_players показывает список всех игроков'
-          message << '/find [game_title] поиск одной игры'
-          message << '/games [game_title] поиск нескольких игр'
-          message << '/top выводит топ по трофеям среди игроков'
-          message << '/me выводит информацию о запросившем игроке'
-          message = message.join("\n")
 
-          [message]
+          [message.join("\n")]
         end
       end
     end

@@ -10,6 +10,8 @@ module HolyRider
         end
 
         def call
+          return unless Player.find(telegram_username: @command[@message_type]['from']['username'])
+
           players = Player.order(:created_at)
           message = [
             'Список игроков:', '  Ник в Телеграм Аккаунт для трофеев Отслеживание статуса'

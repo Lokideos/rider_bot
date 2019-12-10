@@ -6,8 +6,8 @@ module HolyRider
       include Sidekiq::Worker
       sidekiq_options queue: :commands, retry: 2, backtrace: 20
 
-      def perform(chat_id, command, message_type)
-        HolyRider::Service::CommandService.new(chat_id, command, message_type).call
+      def perform(command, message_type)
+        HolyRider::Service::CommandService.new(command, message_type).call
       end
     end
   end

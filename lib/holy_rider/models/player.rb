@@ -33,7 +33,7 @@ class Player < Sequel::Model
         name: name,
         points: points
       }
-    end.sort { |player| player[:points] }
+    end.sort { |left_player, right_player| right_player[:points] <=> left_player[:points] }
   end
 
   def admin?

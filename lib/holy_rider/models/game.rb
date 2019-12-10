@@ -47,10 +47,10 @@ class Game < Sequel::Model
   def self.relevant_games(title, message)
     return unless title.length > 1
 
-    first_games = find_games(/^#{title}*/i).uniq
+    first_games = find_games(/^#{title}.*/i).uniq
     second_games = []
     query_size = first_games.size
-    second_games = find_games(/.*#{title}*/i, limit: 10 - query_size).uniq if query_size < 10
+    second_games = find_games(/.*#{title}.*/i, limit: 10 - query_size).uniq if query_size < 10
 
     player = message['message']['from']['username']
     redis = HolyRider::Application.instance.redis
@@ -83,8 +83,8 @@ class Game < Sequel::Model
     game = if exact
              find_exact_game(title, platform)
            else
-             find_game(/^#{title}*/i, platform: platform) ||
-               find_game(/.*#{title}*/i, platform: platform)
+             find_game(/^#{title}.*/i, platform: platform) ||
+               find_game(/.*#{title}.*/i, platform: platform)
            end
     return unless game
 

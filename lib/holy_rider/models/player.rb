@@ -33,7 +33,7 @@ class Player < Sequel::Model
         name: name,
         points: points
       }
-    end
+    end.sort { |player| player[:points] }
   end
 
   def admin?

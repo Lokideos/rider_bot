@@ -5,6 +5,7 @@ require 'sidekiq/web'
 module HolyRider
   class RodaTree < Roda
     plugin(:not_found) { { error: 'Not found' } }
+    plugin :render, engine: 'slim', views: 'lib/holy_rider/views/roda'
 
     route do |r|
       r.root do
@@ -13,6 +14,20 @@ module HolyRider
 
       r.on 'sidekiq' do
         r.run Sidekiq::Web
+      end
+
+      r.on 'trophy' do
+        params = request.params
+
+        render('trophy', locals: {
+                 psn_id: params['player_account'],
+                 trophy_title: params['trophy_title'],
+                 trophy_description: params['trophy_description'],
+                 trophy_type: params['trophy_type'],
+                 trophy_rarity: params['trophy_rarity'],
+                 trophy_icon_url: params['icon_url'],
+                 game_title: params['game_title']
+               })
       end
 
       r.on 'welcome' do

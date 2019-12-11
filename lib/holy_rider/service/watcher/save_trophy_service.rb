@@ -21,7 +21,18 @@ module HolyRider
 
           return if @initial
 
-          message = "#{@player.telegram_username} earned trophy #{@trophy.trophy_name}!"
+          # TODO: probably should use ruby built-in url generators for this
+          link = "http://#{ENV['FQDN']}/trophy?" \
+                 "player_account=#{@player.trophy_account}&" \
+                 "trophy_title=#{@trophy.trophy_name}&" \
+                 "trophy_description=#{@trophy.trophy_description}&" \
+                 "trophy_type=#{@trophy.trophy_type}&" \
+                 "trophy_rarity=#{@trophy.trophy_earned_rate}&" \
+                 "icon_url=#{@trophy.trophy_icon_url}&" \
+                 "game_title=#{@trophy.game.title}"
+          message = "<a href='#{link}'>@#{@player.telegram_username} - " \
+                    "#{@trophy.game.title} #{@trophy.game.platform}</a>"
+
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
                                                               message: message).call
         end

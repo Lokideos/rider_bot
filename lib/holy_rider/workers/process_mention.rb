@@ -7,6 +7,9 @@ module HolyRider
       sidekiq_options queue: :mentions, retry: 2, backtrace: 20
 
       def perform(chat_id, mention, message_type)
+        # TODO: add mentions processing
+        return
+
         message = 'Привет, Мастер.' if mention[message_type]['text'].include? 'привет'
 
         return unless message

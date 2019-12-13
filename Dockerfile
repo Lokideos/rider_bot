@@ -7,9 +7,7 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 
 # Install system deps
 RUN apt-get -y update && apt-get -y install curl bash build-essential
-RUN apt-get -y update && apt-get -y install patch \
-  ruby-dev \
-  libpq-dev
+RUN apt-get -y update && apt-get -y install patch ruby-dev libpq-dev
 
 WORKDIR /app
 

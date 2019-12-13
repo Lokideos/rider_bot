@@ -5,6 +5,7 @@ require 'sidekiq/web'
 module HolyRider
   class RodaTree < Roda
     plugin(:not_found) { { error: 'Not found' } }
+    plugin :hooks
     plugin :render, engine: 'slim', views: 'lib/holy_rider/views/roda'
 
     route do |r|
@@ -13,6 +14,7 @@ module HolyRider
       end
 
       r.on 'sidekiq' do
+        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         r.run Sidekiq::Web
       end
 
@@ -31,6 +33,7 @@ module HolyRider
       end
 
       r.on 'welcome' do
+        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         'hello world'
       end
 
@@ -40,10 +43,12 @@ module HolyRider
 
       # TODO: delete telegram routes before release
       r.on 'get_updates' do
+        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         HolyRider::Service::Bot::ChatUpdateService.new.call.to_json
       end
 
       r.on 'send_message' do
+        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
                                                             message: 'Test').call.to_json
       end

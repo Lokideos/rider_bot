@@ -60,12 +60,13 @@ module HolyRider
       @config = HolyRider::Configuration.instance.config
       setup_database
       setup_redis
+      setup_background_backbone
       setup_telegram_bot
       case app_type
       when 'bot'
         HolyRider::Bot.application
       when 'background'
-        setup_background_backbone
+        p 'Background started'
       when 'watcher'
         HolyRider::Watcher.application
       when 'web'

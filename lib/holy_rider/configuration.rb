@@ -2,6 +2,7 @@
 
 require 'singleton'
 require 'yaml'
+require 'erb'
 require 'sequel/core'
 
 module HolyRider
@@ -21,20 +22,24 @@ module HolyRider
     end
 
     def load_database
-      database_config = YAML.load_file(File.join(__dir__, '../../', 'config', 'database.yml'))
+      database_config = YAML.load(ERB.new(File.read(File.join(__dir__,
+                                                              '../../',
+                                                              'config',
+                                                              'database.yml'))).result)
       @config[:database] = {
-        db_config: database_config['default'],
-        user: database_config['default']['username'],
-        password: database_config['default']['password'],
-        host: database_config['default']['host'],
-        port: database_config['default']['port'],
+        db_config: database_config[ENV['RACK_ENV']],
+        user: database_config[ENV['RACK_ENV']]['username'],
+        password: database_config[ENV['RACK_ENV']]['password'],
+        host: database_config[ENV['RACK_ENV']]['host'],
+        port: database_config[ENV['RACK_ENV']]['port'],
         names: database_config.values[1..-1].map { |config| config['database'] }
       }
     end
 
     def generate_database_url
       @config[:database][:database_url] = "postgres://#{config[:database][:user]}:" \
-        "#{config[:database][:password]}@#{config[:database][:host]}:#{config[:database][:port]}"
+                                          "#{config[:database][:password]}@" \
+                                          "#{config[:database][:host]}:#{config[:database][:port]}"
     end
   end
 end

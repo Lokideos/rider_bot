@@ -31,6 +31,7 @@ module HolyRider
         add_player
         link_player
         list_players
+        reload_player
       ].freeze
 
       COMMON_COMMANDS = %w[

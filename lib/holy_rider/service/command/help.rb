@@ -28,6 +28,8 @@ module HolyRider
                      'связывает его с PSN аккаунтом(опционально)'
           message << '/link_player [player_name] [player_account] - связывает игрока с PSN ' \
                      ' аккаунтом'
+          message << '/reload_player [player_name] - перезагружает игры и трофеи игрока'
+          message << '/list_players - показывает список зарегистрированных игроков'
 
           [message.join("\n")]
         end

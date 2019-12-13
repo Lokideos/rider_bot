@@ -24,6 +24,7 @@ config/database.yml
 
 # Ignore docker-compose for now
 docker-compose.yml
+docker-compose.yml.db
 
 # Ignore production docker-compose setup
 docker-compose.yml.release

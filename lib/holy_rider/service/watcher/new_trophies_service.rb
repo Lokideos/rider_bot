@@ -11,6 +11,8 @@ module HolyRider
           @hunter_name = hunter_name
           @redis = HolyRider::Application.instance.redis
           @initial = @redis.get("holy_rider:watcher:players:initial_load:#{player_name}")
+          @hidden_check = @redis.get("holy_rider:watcher:players:hidden_check:#{player_name}")
+          @hidden_trophy_service = HolyRider::Service::Watcher::AddHiddenTrophiesService
         end
 
         def call
@@ -21,6 +23,28 @@ module HolyRider
               progress: game.dig('comparedUser', 'progress'),
               last_updated_date: game.dig('comparedUser', 'lastUpdateDate')
             }
+          end
+
+          unless @initial
+            service_ids = games_trophy_progresses.map(&:trophy_service_id)
+            current_game_status_dates = Player.where(trophy_account: @player_name).left_join(:game_acquisitions, player_id: :id).where(trophy_service_id: service_ids).map(:last_updated_date).sort
+            psn_game_status_dates = games_trophy_progresses.map do |progress|
+              progress[:last_updated_date]
+            end
+            prepared_psn_dates = psn_game_status_dates.map do |date|
+              Time.parse(date) - Time.now.getlocal.utc_offset
+            end
+
+            if (current_game_status_dates - prepared_psn_dates).empty?
+              unless @hidden_check
+                @hidden_trophy_service.new(player_name: @player_name,
+                                           hunter_name: @hunter_name).call
+                @redis.setex("holy_rider:watcher:players:hidden_check:#{@player_name}",
+                             86_400,
+                             'checked')
+              end
+              return
+            end
           end
 
           games_trophy_progresses.each do |trophy_progress|

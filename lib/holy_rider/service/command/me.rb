@@ -15,11 +15,20 @@ module HolyRider
           trophy_account = player.trophy_account
           telegram_name = player.telegram_username
           message = ["<b>Профиль игрока #{trophy_account} (@#{telegram_name})</b>"]
+          message << "<code>PSN level         #{profile[:trophy_level]}</code>"
+          message << "<code>Level up progress #{profile[:level_up_progress]}</code>"
           message << "<code>Количество игр    #{profile[:games].count}</code>"
           message << "<code>Платиновые трофеи #{profile[:trophies][:platinum].count}</code>"
           message << "<code>Золотые трофеи    #{profile[:trophies][:gold].count}</code>"
           message << "<code>Серебряные трофеи #{profile[:trophies][:silver].count}</code>"
           message << "<code>Бронзовые трофеи  #{profile[:trophies][:bronze].count}</code>"
+          message << "<code>Всего трофеев     #{profile[:trophies][:total].count}</code>"
+          message << "\nСкрытые трофеи:"
+          message << "<code>Платиновые трофеи #{profile[:hidden_trophies][:platinum].count}</code>"
+          message << "<code>Золотые трофеи    #{profile[:hidden_trophies][:gold].count}</code>"
+          message << "<code>Серебряные трофеи #{profile[:hidden_trophies][:silver].count}</code>"
+          message << "<code>Бронзовые трофеи  #{profile[:hidden_trophies][:bronze].count}</code>"
+          message << "<code>Всего трофеев     #{profile[:hidden_trophies][:total].count}</code>"
 
           [message.join("\n")]
         end

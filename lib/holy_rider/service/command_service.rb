@@ -16,6 +16,7 @@ require_relative 'command/top'
 require_relative 'command/me'
 require_relative 'command/get_game_from_cache'
 require_relative 'command/reload_player'
+require_relative 'command/stats'
 
 module HolyRider
   module Service
@@ -40,6 +41,7 @@ module HolyRider
         games
         top
         me
+        stats
       ].concat(CACHED_GAMES).freeze
 
       META_COMMANDS = %w[help].freeze

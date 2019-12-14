@@ -25,12 +25,14 @@ class Player < Sequel::Model
   def self.trophy_top
     Player.all.map do |player|
       name = player.trophy_account
+      telegram_name = player.telegram_username
       points = player.trophies.map do |trophy|
         TROPHIES_WEIGHT[trophy.trophy_type.to_sym]
       end.inject(0, :+)
 
       {
-        name: name,
+        trophy_account: name,
+        telegram_username: telegram_name,
         points: points
       }
     end.sort { |left_player, right_player| right_player[:points] <=> left_player[:points] }

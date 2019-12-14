@@ -46,7 +46,7 @@ class Game < Sequel::Model
     end
   end
 
-  def self.relevant_games(title, message)
+  def self.relevant_games(title, message, message_type)
     return unless title.length > 1
 
     first_games = find_games(/^#{title}.*/i).uniq
@@ -54,7 +54,7 @@ class Game < Sequel::Model
     query_size = first_games.size
     second_games = find_games(/.*#{title}.*/i, limit: 10 - query_size).uniq if query_size < 10
 
-    player = message['message']['from']['username']
+    player = message[message_type]['from']['username']
     redis = HolyRider::Application.instance.redis
     all_games = (first_games << second_games).flatten.uniq
     all_games.each_with_index do |game_title, index|
@@ -75,6 +75,7 @@ class Game < Sequel::Model
     redis.smembers("holy_rider:top:#{player}:games").each do |key|
       redis.del(key)
     end
+    redis.del("holy_rider:top:#{player}:games")
     top_game(game_title, platform: game_platform, exact: true) if game_title
   end
 

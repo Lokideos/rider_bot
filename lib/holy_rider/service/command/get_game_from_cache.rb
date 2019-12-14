@@ -10,7 +10,7 @@ module HolyRider
         end
 
         def call
-          index = @command[@message_type]['text'].split(' ')[0][1..-1]
+          index = @command[@message_type]['text'].split(' ')[0].split('@')[0][1..-1]
           player = @command['message']['from']['username']
           top = Game.find_game_from_cache(player, index)
           return unless top

@@ -16,6 +16,7 @@ module HolyRider
           message << '/games [game_title] поиск нескольких игр'
           message << '/top выводит топ по трофеям среди игроков'
           message << '/me выводит информацию о запросившем игроке'
+          message << '/stats [@telegram_name] - выводит информацию об игроке [telegram_name]'
           return [message.join("\n")] unless player.admin?
 
           message << '/hunter_stats - показывает текущих охотников за трофеями'

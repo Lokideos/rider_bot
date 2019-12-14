@@ -22,15 +22,16 @@ module HolyRider
           message << "<code>PSN level         #{profile[:trophy_level]}</code>"
           message << "<code>Level up progress #{profile[:level_up_progress]}</code>"
           message << "<code>Количество игр    #{profile[:games].count}</code>"
+          message << "<b>\nТрофеи:</b>"
           message << "<code>Платиновые трофеи #{profile[:trophies][:platinum].count}</code>"
           message << "<code>Золотые трофеи    #{profile[:trophies][:gold].count}</code>"
           message << "<code>Серебряные трофеи #{profile[:trophies][:silver].count}</code>"
           message << "<code>Бронзовые трофеи  #{profile[:trophies][:bronze].count}</code>"
           message << "<code>Всего трофеев     #{profile[:trophies][:total].count}</code>"
           if profile[:hidden_trophies][:total].count.zero?
-            message << "\nСкрытые трофеи: #{player_name} скрывать нечего!"
+            message << "\n<b>Скрытые трофеи:</b> #{player_name} скрывать нечего!"
           else
-            message << "\nСкрытые трофеи:"
+            message << "<b>\nСкрытые трофеи:</b>"
             message << '<code>Платиновые трофеи ' \
                        "#{profile[:hidden_trophies][:platinum].count}</code>"
             message << "<code>Золотые трофеи    #{profile[:hidden_trophies][:gold].count}</code>"

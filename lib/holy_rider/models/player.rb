@@ -58,8 +58,16 @@ class Player < Sequel::Model
     trophies.select { |trophy| trophy.trophy_type == trophy_type && trophy.hidden == hidden }
   end
 
+  def all_public_trophies
+    trophies.select { |trophy| trophy.hidden == false }
+  end
+
   def all_hidden_trophies
     trophies.select { |trophy| trophy.hidden == true }
+  end
+
+  def all_trophies_by_type(trophy_type)
+    trophies.select { |trophy| trophy.trophy_type == trophy_type }
   end
 
   def profile
@@ -69,18 +77,18 @@ class Player < Sequel::Model
         silver: trophies_by_type('silver'),
         gold: trophies_by_type('gold'),
         platinum: trophies_by_type('platinum'),
-        total: trophies.count
+        total: all_public_trophies
       },
       hidden_trophies: {
         bronze: trophies_by_type('bronze', hidden: true),
         silver: trophies_by_type('silver', hidden: true),
         gold: trophies_by_type('gold', hidden: true),
         platinum: trophies_by_type('platinum', hidden: true),
-        total: all_hidden_trophies.count
+        total: all_hidden_trophies
       },
       games: games,
-      trophy_level: player.trophy_level,
-      level_up_progress: player.level_up_progress
+      trophy_level: trophy_level,
+      level_up_progress: level_up_progress
     }
   end
 end

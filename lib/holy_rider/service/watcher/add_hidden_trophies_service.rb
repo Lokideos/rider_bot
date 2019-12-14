@@ -23,18 +23,12 @@ module HolyRider
           initial_load = @redis.get("holy_rider:watcher:players:initial_load:#{player.trophy_account}:trophy_count")
           return if initial_load
 
-          instance_variable_set('@hidden_platinum_trophies',
-                                trophy_summary['earnedTrophies']['platinum'] -
-                                  player.trophies_by_type('platinum').count)
-          instance_variable_set('@hidden_gold_trophies',
-                                trophy_summary['earnedTrophies']['gold'] -
-                                  player.trophies_by_type('gold').count)
-          instance_variable_set('@hidden_silver_trophies',
-                                trophy_summary['earnedTrophies']['silver'] -
-                                  player.trophies_by_type('silver').count)
-          instance_variable_set('@hidden_bronze_trophies',
-                                trophy_summary['earnedTrophies']['bronze'] -
-                                  player.trophies_by_type('bronze').count)
+          TROPHY_TYPES.each do |trophy_type|
+            instance_variable_set("@hidden_#{trophy_type}_trophies",
+                                  trophy_summary['earnedTrophies'][trophy_type] -
+                                    player.all_trophies_by_type(trophy_type).count)
+          end
+
           TROPHY_TYPES.each do |trophy_type|
             trophy_type_count = instance_variable_get("@hidden_#{trophy_type}_trophies")
             save_hidden_trophies(player, trophy_type, trophy_type_count)

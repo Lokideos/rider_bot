@@ -20,6 +20,14 @@ class Player < Sequel::Model
     def active_trophy_accounts
       where(on_watch: true).map(:trophy_account)
     end
+
+    def last_updated_game_ids(trophy_account, service_ids)
+      where(trophy_account: trophy_account)
+        .inner_join(:game_acquisitions, player_id: :id)
+        .inner_join(:games, id: :game_id)
+        .where(trophy_service_id: service_ids)
+        .map(:last_updated_date)
+    end
   end
 
   def self.trophy_top

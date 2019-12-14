@@ -27,7 +27,8 @@ module HolyRider
 
           unless @initial
             service_ids = games_trophy_progresses.map { |progress| progress[:trophy_service_id] }
-            current_game_status_dates = Player.where(trophy_account: @player_name).inner_join(:game_acquisitions, player_id: :id).inner_join(:games, id: :game_id).where(trophy_service_id: service_ids).map(:last_updated_date).map(&:utc).sort
+            current_game_status_dates = Player.last_updated_game_ids(@player_name, service_ids)
+                                              .map(&:utc).sort
             psn_game_status_dates = games_trophy_progresses.map do |progress|
               progress[:last_updated_date]
             end

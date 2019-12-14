@@ -13,11 +13,6 @@ module HolyRider
         '<h1>The RODA root</h1>'
       end
 
-      r.on 'sidekiq' do
-        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
-        r.run Sidekiq::Web
-      end
-
       r.on 'trophy' do
         params = request.params
 
@@ -32,8 +27,13 @@ module HolyRider
                })
       end
 
+      r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
+
+      r.on 'sidekiq' do
+        r.run Sidekiq::Web
+      end
+
       r.on 'welcome' do
-        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         'hello world'
       end
 
@@ -43,12 +43,10 @@ module HolyRider
 
       # TODO: delete telegram routes before release
       r.on 'get_updates' do
-        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         HolyRider::Service::Bot::ChatUpdateService.new.call.to_json
       end
 
       r.on 'send_message' do
-        r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
         HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
                                                             message: 'Test').call.to_json
       end

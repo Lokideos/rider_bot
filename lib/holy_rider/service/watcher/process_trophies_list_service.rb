@@ -41,6 +41,13 @@ module HolyRider
                                                     trophy_service_id: @trophy_service_id).call
 
           earned_trophies = trophies_list.select { |trophy| trophy.dig('comparedUser', 'earned') }
+
+          if @initial
+            @redis.setex("holy_rider:watcher:players:initial_load:#{@player.trophy_account}:trophy_count",
+                         3600,
+                         'initial_load')
+          end
+
           earned_trophies_ids = earned_trophies.map { |trophy| trophy['trophyId'] }
           player_trophies = @player.trophies.select { |trophy| trophy.game_id == @game.id }
 

@@ -14,6 +14,7 @@ Sequel.migration do
       String :trophy_small_icon_url, null: false
       String :trophy_earned_rate, null: false
       Integer :trophy_rare, null: false
+      Boolean :hidden, default: false, index: true
       DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP, index: true
       DateTime :updated_at, null: false, index: true
     end

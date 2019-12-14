@@ -20,6 +20,14 @@ class Player < Sequel::Model
     def active_trophy_accounts
       where(on_watch: true).map(:trophy_account)
     end
+
+    def last_updated_game_ids(trophy_account, service_ids)
+      where(trophy_account: trophy_account)
+        .inner_join(:game_acquisitions, player_id: :id)
+        .inner_join(:games, id: :game_id)
+        .where(trophy_service_id: service_ids)
+        .map(:last_updated_date)
+    end
   end
 
   def self.trophy_top
@@ -46,7 +54,19 @@ class Player < Sequel::Model
     on_watch
   end
 
-  def trophies_by_type(trophy_type)
+  def trophies_by_type(trophy_type, hidden: false)
+    trophies.select { |trophy| trophy.trophy_type == trophy_type && trophy.hidden == hidden }
+  end
+
+  def all_public_trophies
+    trophies.select { |trophy| trophy.hidden == false }
+  end
+
+  def all_hidden_trophies
+    trophies.select { |trophy| trophy.hidden == true }
+  end
+
+  def all_trophies_by_type(trophy_type)
     trophies.select { |trophy| trophy.trophy_type == trophy_type }
   end
 
@@ -56,9 +76,19 @@ class Player < Sequel::Model
         bronze: trophies_by_type('bronze'),
         silver: trophies_by_type('silver'),
         gold: trophies_by_type('gold'),
-        platinum: trophies_by_type('platinum')
+        platinum: trophies_by_type('platinum'),
+        total: all_public_trophies
       },
-      games: games
+      hidden_trophies: {
+        bronze: trophies_by_type('bronze', hidden: true),
+        silver: trophies_by_type('silver', hidden: true),
+        gold: trophies_by_type('gold', hidden: true),
+        platinum: trophies_by_type('platinum', hidden: true),
+        total: all_hidden_trophies
+      },
+      games: games,
+      trophy_level: trophy_level,
+      level_up_progress: level_up_progress
     }
   end
 end

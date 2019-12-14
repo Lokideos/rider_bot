@@ -11,7 +11,7 @@ module HolyRider
 
         def call
           game_title = @command[@message_type]['text'].split(' ')[1..-1].join(' ')
-          games_list = Game.relevant_games(game_title, @command)
+          games_list = Game.relevant_games(game_title, @command, @message_type)
           return unless games_list
 
           message = []

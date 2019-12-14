@@ -10,7 +10,7 @@ module HolyRider
 
     route do |r|
       r.root do
-        'The RODA root'
+        '<h1>The RODA root</h1>'
       end
 
       r.on 'sidekiq' do

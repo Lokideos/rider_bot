@@ -17,6 +17,8 @@ module HolyRider
           message = @command[@message_type]['text'].split(' ')
           username = message[1]
           trophy_account = message[2]
+          return unless username
+
           Player.create(telegram_username: username)
           return successful_message(username) unless trophy_account
 

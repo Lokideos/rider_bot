@@ -46,7 +46,7 @@ module HolyRider
         private
 
         def prepare_game_title(game_title)
-          game_title.gsub(/[\u2122\u00ae\n]/, ' ').gsub(/  /, ' ')
+          game_title.gsub(/[\u2122\u00ae\n]/, ' ').gsub(/  /, ' ').strip
         end
       end
     end

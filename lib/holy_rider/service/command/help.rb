@@ -25,12 +25,12 @@ module HolyRider
           message << '/hunter_gear_status [hunter_name] - отображает статус токена охотника'
           message << '/hunter_activate [hunter_name] - охотник начинает обращаться в PSN'
           message << '/hunter_deactivate [hunter_name] - охотник перестает обращаться в PSN'
-          message << '/add_player [player_name] [*player_account] - добавляет игрока и ' \
+          message << '/player_add [player_name] [*player_account] - добавляет игрока и ' \
                      'связывает его с PSN аккаунтом(опционально)'
-          message << '/link_player [player_name] [player_account] - связывает игрока с PSN ' \
+          message << '/player_link [player_name] [player_account] - связывает игрока с PSN ' \
                      ' аккаунтом'
-          message << '/reload_player [player_name] - перезагружает игры и трофеи игрока'
-          message << '/list_players - показывает список зарегистрированных игроков'
+          message << '/player_reload [player_name] - перезагружает игры и трофеи игрока'
+          message << '/players - показывает список зарегистрированных игроков'
 
           [message.join("\n")]
         end

@@ -7,15 +7,15 @@ require_relative 'command/hunter_gear_status'
 require_relative 'command/hunter_gear_up'
 require_relative 'command/hunter_activate'
 require_relative 'command/hunter_deactivate'
-require_relative 'command/add_player'
-require_relative 'command/link_player'
-require_relative 'command/list_players'
+require_relative 'command/player_add'
+require_relative 'command/player_link'
+require_relative 'command/players'
 require_relative 'command/find'
 require_relative 'command/games'
 require_relative 'command/top'
 require_relative 'command/me'
 require_relative 'command/get_game_from_cache'
-require_relative 'command/reload_player'
+require_relative 'command/player_reload'
 require_relative 'command/stats'
 
 module HolyRider
@@ -30,10 +30,10 @@ module HolyRider
         hunter_gear_up
         hunter_activate
         hunter_deactivate
-        add_player
-        link_player
-        list_players
-        reload_player
+        player_add
+        player_link
+        players
+        player_reload
       ].freeze
 
       COMMON_COMMANDS = %w[

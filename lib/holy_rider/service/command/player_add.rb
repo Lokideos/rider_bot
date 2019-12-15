@@ -3,7 +3,7 @@
 module HolyRider
   module Service
     module Command
-      class AddPlayer
+      class PlayerAdd
         def initialize(command, message_type)
           @command = command
           @message_type = message_type

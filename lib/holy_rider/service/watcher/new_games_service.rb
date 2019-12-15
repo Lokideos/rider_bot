@@ -23,7 +23,9 @@ module HolyRider
                                                                 trophy_service_id: id,
                                                                 extended: true).call
 
-            game = Game.create(trophy_service_id: id, title: new_game['trophyTitleName'],
+            prepared_game_title = prepare_game_title(new_game['trophyTitleName'])
+
+            game = Game.create(trophy_service_id: id, title: prepared_game_title,
                                platform: new_game['trophyTitlePlatfrom'],
                                icon_url: new_game['trophyTitleIconUrl'])
 
@@ -39,6 +41,12 @@ module HolyRider
                                             trophy_rare: trophy['trophyRare']))
             end
           end
+        end
+
+        private
+
+        def prepare_game_title(game_title)
+          game_title.gsub(/[\u2122\u00ae\n]/, ' ').gsub(/  /, ' ').strip
         end
       end
     end

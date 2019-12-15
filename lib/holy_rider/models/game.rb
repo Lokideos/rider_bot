@@ -83,6 +83,8 @@ class Game < Sequel::Model
   def self.top_game(title, platform: nil, exact: false)
     return unless title.length > 1
 
+    title = title.strip
+
     game = if exact
              find_exact_game(title, platform)
            else

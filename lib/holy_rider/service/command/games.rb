@@ -19,6 +19,7 @@ module HolyRider
           games_list.each_with_index do |game, index|
             message << "/#{index + 1} <b>#{game}</b>"
           end
+          message << 'Игорь нет' if games_list.empty?
 
           [message.join("\n")]
         end

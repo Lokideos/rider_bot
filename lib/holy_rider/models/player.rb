@@ -34,7 +34,7 @@ class Player < Sequel::Model
     Player.all.map do |player|
       name = player.trophy_account
       telegram_name = player.telegram_username
-      points = player.trophy_points ? player.trophy_points.to_i : player.store_trophy_points
+      points = player.trophy_points ? player.trophy_points.to_i : player.update_trophy_points
       {
         trophy_account: name,
         telegram_username: telegram_name,
@@ -48,7 +48,7 @@ class Player < Sequel::Model
     redis.get("holy_rider:players:#{trophy_account}:trophy_points")
   end
 
-  def store_trophy_points
+  def update_trophy_points
     redis = HolyRider::Application.instance.redis
     trophy_points = trophies.map do |trophy|
       TROPHIES_WEIGHT[trophy.trophy_type.to_sym]

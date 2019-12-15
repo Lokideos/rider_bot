@@ -34,16 +34,28 @@ class Player < Sequel::Model
     Player.all.map do |player|
       name = player.trophy_account
       telegram_name = player.telegram_username
-      points = player.trophies.map do |trophy|
-        TROPHIES_WEIGHT[trophy.trophy_type.to_sym]
-      end.inject(0, :+)
-
+      points = player.trophy_points ? player.trophy_points.to_i : player.store_trophy_points
       {
         trophy_account: name,
         telegram_username: telegram_name,
         points: points
       }
     end.sort { |left_player, right_player| right_player[:points] <=> left_player[:points] }
+  end
+
+  def trophy_points
+    redis = HolyRider::Application.instance.redis
+    redis.get("holy_rider:players:#{trophy_account}:trophy_points")
+  end
+
+  def store_trophy_points
+    redis = HolyRider::Application.instance.redis
+    trophy_points = trophies.map do |trophy|
+      TROPHIES_WEIGHT[trophy.trophy_type.to_sym]
+    end.inject(0, :+)
+    redis.set("holy_rider:players:#{trophy_account}:trophy_points", trophy_points)
+
+    trophy_points
   end
 
   def admin?

@@ -31,7 +31,7 @@ module HolyRider
                  "trophy_rarity=#{@trophy.trophy_earned_rate}&" \
                  "icon_url=#{@trophy.trophy_icon_url}&" \
                  "game_title=#{@trophy.game.title}"
-          message = "<a href='#{link}'>@#{@player.telegram_username} - " \
+          message = "@#{@player.telegram_username} - <a href='#{link}'>" \
                     "#{@trophy.game.title} #{@trophy.game.platform}</a>"
 
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],

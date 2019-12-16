@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'telegram/bot'
+require 'typhoeus'
 
 module HolyRider
   module Client
@@ -33,6 +34,18 @@ module HolyRider
 
       def send_message(chat_id:, message:)
         chat_bot.send_message(chat_id: chat_id, text: message, parse_mode: 'html')
+      end
+
+      def send_sticker(chat_id:, sticker:)
+        Typhoeus::Request.new(sticker_url(chat_id, sticker), method: :post).run
+      end
+
+      private
+
+      def sticker_url(chat_id, sticker)
+        "https://api.telegram.org/bot#{@chat_bot.token}/sendSticker?" \
+          "chat_id=#{chat_id}&" \
+          "sticker=#{sticker}"
       end
     end
   end

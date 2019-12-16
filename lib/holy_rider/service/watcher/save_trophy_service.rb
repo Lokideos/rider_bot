@@ -4,6 +4,8 @@ module HolyRider
   module Service
     module Watcher
       class SaveTrophyService
+        PLATINUM_STICKER = 'BQADAgADTwsAAkKvaQABElnJclGri9EC'
+
         def initialize(player_id, trophy_id, trophy_earning_time, initial)
           @player = Player.find(id: player_id)
           @trophy = Trophy.find(id: trophy_id)
@@ -36,6 +38,10 @@ module HolyRider
 
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
                                                               message: message).call
+          return unless @trophy.trophy_type == 'platinum'
+
+          HolyRider::Service::Bot::SendStickerService.new(chat_id: ENV['PS_CHAT_ID'],
+                                                          sticker: PLATINUM_STICKER).call
         end
       end
     end

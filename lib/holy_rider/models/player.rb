@@ -43,6 +43,15 @@ class Player < Sequel::Model
     end.sort { |left_player, right_player| right_player[:points] <=> left_player[:points] }
   end
 
+  def self.trophy_top_force_update
+    redis = HolyRider::Application.instance.redis
+    redis.keys('holy_rider:players:trophy_points:*').each do |key|
+      redis.del(key)
+    end
+
+    trophy_top
+  end
+
   def trophy_points
     redis = HolyRider::Application.instance.redis
     redis.get("holy_rider:players:trophy_points:#{trophy_account}")

@@ -25,7 +25,7 @@ module HolyRider
             end
             player_name = player_name[0..11] + '...' if player_name.length > 12
             game_top << "<code>#{player_name} " + ' ' * (MAX_NAME_LENGTH - player_name.length) +
-                        player_progress +
+                        player_progress.to_s +
                         ' ' * (MAX_PROGRESS_LENGTH - player_progress.to_s.length) + '</code>' +
                         platinum_trophy.to_s
           end

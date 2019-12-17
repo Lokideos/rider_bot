@@ -33,9 +33,15 @@ module HolyRider
                      "trophy_rarity=#{@trophy.trophy_earned_rate}&" \
                      "icon_url=#{@trophy.trophy_icon_url}&" \
                      "game_title=#{@trophy.game.title}").to_s
-          message = "@#{@player.telegram_username} - <a href='#{link}'>" \
-                    "#{@trophy.game.title} #{@trophy.game.platform}</a>"
 
+          message_parts = @player.trophy_ping_on? ? ["@#{@player.telegram_username}"] : ['<code>' \
+            "#{@player.telegram_username}</code>"]
+          message_parts << "- <a href='#{link}'>#{@trophy.game.title} #{@trophy.game.platform}</a>"
+
+          # message = "@#{@player.telegram_username} - <a href='#{link}'>" \
+          #          "#{@trophy.game.title} #{@trophy.game.platform}</a>"
+
+          message = message_parts.join(' ')
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
                                                               message: message).call
           return unless @trophy.trophy_type == 'platinum'

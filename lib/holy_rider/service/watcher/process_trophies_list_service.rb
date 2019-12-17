@@ -4,6 +4,8 @@ module HolyRider
   module Service
     module Watcher
       class ProcessTrophiesListService
+        TROPHY_TYPES = %w[bronze silver gold platinum].freeze
+
         def initialize(player_id, game_id, trophy_service_id, initial)
           @player = Player.find(id: player_id)
           @game = Game.find(id: game_id)
@@ -66,9 +68,12 @@ module HolyRider
           # TODO: find in Sequel better method to do thisb
           new_earned_trophies = new_earned_trophies_ids.map do |trophy_id|
             @game.trophies.find { |trophy| trophy.trophy_service_id == trophy_id }
-          end
+          end.group_by(&:trophy_type)
+          sorted_new_trophies = TROPHY_TYPES.map do |trophy_type|
+            new_earned_trophies[trophy_type]
+          end.flatten.compact
 
-          new_earned_trophies.each do |trophy|
+          sorted_new_trophies.each do |trophy|
             trophy_earning_time = earned_trophies_dates.find do |trophy_date|
               trophy_date[:trophy_service_id] == trophy.trophy_service_id
             end[:earned_at]

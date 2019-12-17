@@ -25,6 +25,7 @@ module HolyRider
           message << '/hunter_gear_status [hunter_name] - отображает статус токена охотника'
           message << '/hunter_activate [hunter_name] - охотник начинает обращаться в PSN'
           message << '/hunter_deactivate [hunter_name] - охотник перестает обращаться в PSN'
+          message << '/top_force_update - переформирует кэш топа трофеев'
           message << '/player_add [player_name] [*player_account] - добавляет игрока и ' \
                      'связывает его с PSN аккаунтом(опционально)'
           message << '/player_link [player_name] [player_account] - связывает игрока с PSN ' \

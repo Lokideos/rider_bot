@@ -21,6 +21,7 @@ require_relative 'command/trophy_ping_on'
 require_relative 'command/trophy_ping_off'
 require_relative 'command/player_watch_on'
 require_relative 'command/player_watch_off'
+require_relative 'command/top_force_update'
 
 module HolyRider
   module Service
@@ -40,6 +41,7 @@ module HolyRider
         player_reload
         player_watch_on
         player_watch_off
+        top_force_update
       ].freeze
 
       COMMON_COMMANDS = %w[

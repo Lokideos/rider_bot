@@ -48,7 +48,7 @@ module HolyRider
                 "trophy_title=#{@trophy.trophy_name.gsub(/’/, '%E2%80%99')}&" \
                 "trophy_description=#{@trophy.trophy_description.gsub(/’/, '%E2%80%99')}&" \
                 "trophy_type=#{@trophy.trophy_type}&" \
-                "trophy_rarity=#{@trophy.trophy_earned_rate}&" \
+                "trophy_rarity=#{@trophy.trophy_earned_rate}%25&" \
                 "icon_url=#{@trophy.trophy_icon_url}&" \
                 "game_title=#{@trophy.game.title.gsub(/’/, '%E2%80%99')}"
                 .gsub(/#/, '%23')).to_s

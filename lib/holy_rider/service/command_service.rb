@@ -17,6 +17,8 @@ require_relative 'command/me'
 require_relative 'command/get_game_from_cache'
 require_relative 'command/player_reload'
 require_relative 'command/stats'
+require_relative 'command/trophy_ping_on'
+require_relative 'command/trophy_ping_off'
 
 module HolyRider
   module Service
@@ -42,6 +44,8 @@ module HolyRider
         top
         me
         stats
+        trophy_ping_on
+        trophy_ping_off
       ].concat(CACHED_GAMES).freeze
 
       META_COMMANDS = %w[help].freeze

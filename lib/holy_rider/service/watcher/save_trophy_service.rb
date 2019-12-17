@@ -25,21 +25,10 @@ module HolyRider
           HolyRider::Workers::ProcessTrophyTopUpdate.perform_async(@player.id)
 
           # TODO: probably should use ruby built-in url generators for this
-          link = URI("http://#{ENV['FQDN']}/trophy?" \
-                     "player_account=#{@player.trophy_account}&" \
-                     "trophy_title=#{@trophy.trophy_name}&" \
-                     "trophy_description=#{@trophy.trophy_description}&" \
-                     "trophy_type=#{@trophy.trophy_type}&" \
-                     "trophy_rarity=#{@trophy.trophy_earned_rate}&" \
-                     "icon_url=#{@trophy.trophy_icon_url}&" \
-                     "game_title=#{@trophy.game.title}").to_s
-
+          link = prepared_link
           message_parts = @player.trophy_ping_on? ? ["@#{@player.telegram_username}"] : ['<code>' \
             "#{@player.telegram_username}</code>"]
           message_parts << "- <a href='#{link}'>#{@trophy.game.title} #{@trophy.game.platform}</a>"
-
-          # message = "@#{@player.telegram_username} - <a href='#{link}'>" \
-          #          "#{@trophy.game.title} #{@trophy.game.platform}</a>"
 
           message = message_parts.join(' ')
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
@@ -48,6 +37,21 @@ module HolyRider
 
           HolyRider::Service::Bot::SendStickerService.new(chat_id: ENV['PS_CHAT_ID'],
                                                           sticker: PLATINUM_STICKER).call
+        end
+
+        private
+
+        # TODO: refactoring needed
+        def prepared_link
+          URI("http://#{ENV['FQDN']}/trophy?" \
+                "player_account=#{@player.trophy_account}&" \
+                "trophy_title=#{@trophy.trophy_name.gsub(/’/, '%E2%80%99')}&" \
+                "trophy_description=#{@trophy.trophy_description.gsub(/’/, '%E2%80%99')}&" \
+                "trophy_type=#{@trophy.trophy_type}&" \
+                "trophy_rarity=#{@trophy.trophy_earned_rate}&" \
+                "icon_url=#{@trophy.trophy_icon_url}&" \
+                "game_title=#{@trophy.game.title.gsub(/’/, '%E2%80%99')}"
+                .gsub(/#/, '%23')).to_s
         end
       end
     end

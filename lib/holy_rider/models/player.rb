@@ -62,6 +62,10 @@ class Player < Sequel::Model
     admin
   end
 
+  def trophy_ping_on?
+    trophy_ping
+  end
+
   def on_watch?
     on_watch
   end

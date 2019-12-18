@@ -10,6 +10,9 @@ module HolyRider
         end
 
         def call
+          player = Player.find(telegram_username: @command[@message_type]['from']['username'])
+          return unless player.admin?
+
           updated_top = Player.trophy_top_force_update
           message = ['Топ трофеев был успешно обновлен']
           message << 'Обновленный топ трофеев:'

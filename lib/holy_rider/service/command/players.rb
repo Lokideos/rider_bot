@@ -10,7 +10,8 @@ module HolyRider
         end
 
         def call
-          return unless Player.find(telegram_username: @command[@message_type]['from']['username'])
+          player = Player.find(telegram_username: @command[@message_type]['from']['username'])
+          return unless player.admin?
 
           players = Player.order(:created_at)
           message = [

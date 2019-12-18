@@ -11,6 +11,9 @@ module HolyRider
         end
 
         def call
+          player = Player.find(telegram_username: @command[@message_type]['from']['username'])
+          return unless player.admin?
+
           player_name = @command[@message_type]['text'].split(' ')[1]
           player = Player.find(telegram_username: player_name)
           message = ['Трофеи игрока уже не отслеживаются']

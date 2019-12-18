@@ -67,6 +67,13 @@ class Player < Sequel::Model
     trophy_points
   end
 
+  def delete_hidden_trophies
+    trophies.select { |trophy| trophy.trophy_icon_url == 'hidden' }.each do |trophy|
+      remove_trophy(trophy)
+      trophy.delete
+    end
+  end
+
   def admin?
     admin
   end

@@ -9,6 +9,7 @@ module HolyRider
         def initialize(player_name:, hunter_name:)
           @redis = HolyRider::Application.instance.redis
           @player_name = player_name
+          @player = Player.find(trophy_account: player_name)
           @token = @redis.get("holy_rider:trophy_hunter:#{hunter_name}:access_token")
           @user_trophies_client = HolyRider::Client::PSN::Trophy::UserTrophySummary
         end
@@ -22,6 +23,8 @@ module HolyRider
                         level_up_progress: trophy_summary['progress'])
           initial_load = @redis.get("holy_rider:watcher:players:initial_load:#{player.trophy_account}:trophy_count")
           return if initial_load
+
+          @player.delete_hidden_trophies
 
           TROPHY_TYPES.each do |trophy_type|
             instance_variable_set("@hidden_#{trophy_type}_trophies",

@@ -79,7 +79,7 @@ class Game < Sequel::Model
     top_game(game_title, platform: game_platform, exact: true) if game_title
   end
 
-  # TODO: refactoring needed
+  # TODO: refactoring needed!
   def self.top_game(title, platform: nil, exact: false)
     return unless title.length > 1
 
@@ -93,13 +93,35 @@ class Game < Sequel::Model
            end
     return unless game
 
-    game_id = game.values[:game_id]
+    game_id = game.values.dig(:game_id)
+
     progresses = GameAcquisition.find_progresses(game_id)
-    players_with_platinum = players_with_platinum_trophy(game_id)
+    platinum = Trophy.find(game_id: game.values.dig(:game_id), trophy_type: 'platinum')
+
+    grouped_progresses = progresses.map do |progress|
+      OpenStruct.new(
+        trophy_account:        progress.values.dig(:trophy_account),
+        progress:              progress.values.dig(:progress),
+        platinum_earning_date: TrophyAcquisition.find(
+          trophy_id: platinum&.id,
+          player_id: progress.values.dig(:player_id)
+        )&.earned_at
+      )
+    end.group_by(&:progress)
+
+    grouped_progresses.each_key do |progress_group|
+      player_progresses = grouped_progresses[progress_group]
+      grouped_progresses[progress_group] =  [
+        player_progresses.select(&:platinum_earning_date).sort do |left_player, right_player|
+          left_player.platinum_earning_date <=> right_player.platinum_earning_date
+        end,
+        player_progresses.select { |player_progress| player_progress.platinum_earning_date.nil? }
+      ].flatten
+    end
+
     {
       game: game,
-      progresses: progresses,
-      platinum: players_with_platinum
+      progresses: grouped_progresses.values.flatten
     }
   end
 

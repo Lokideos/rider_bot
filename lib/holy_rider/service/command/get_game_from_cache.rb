@@ -16,7 +16,7 @@ module HolyRider
           return unless top
 
           title = "<a href='#{top[:game].icon_url}'>#{top[:game].title} #{top[:game].platform}</a>"
-          game_top = HolyRider::Service::Bot::GameTopService.new(top: top).call
+          game_top = HolyRider::Service::Bot::GameTopService.new(top: top[:progresses]).call
 
           [title, game_top]
         end

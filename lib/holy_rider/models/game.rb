@@ -100,8 +100,8 @@ class Game < Sequel::Model
 
     grouped_progresses = progresses.map do |progress|
       OpenStruct.new(
-        trophy_account:        progress.values.dig(:trophy_account),
-        progress:              progress.values.dig(:progress),
+        trophy_account: progress.values.dig(:trophy_account),
+        progress: progress.values.dig(:progress),
         platinum_earning_date: TrophyAcquisition.find(
           trophy_id: platinum&.id,
           player_id: progress.values.dig(:player_id)
@@ -111,7 +111,7 @@ class Game < Sequel::Model
 
     grouped_progresses.each_key do |progress_group|
       player_progresses = grouped_progresses[progress_group]
-      grouped_progresses[progress_group] =  [
+      grouped_progresses[progress_group] = [
         player_progresses.select(&:platinum_earning_date).sort do |left_player, right_player|
           left_player.platinum_earning_date <=> right_player.platinum_earning_date
         end,

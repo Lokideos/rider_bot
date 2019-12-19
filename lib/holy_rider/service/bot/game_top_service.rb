@@ -20,9 +20,9 @@ module HolyRider
             platinum_trophy = progress.platinum_earning_date ? "\xF0\x9F\x8F\x86" : nil
             player_name = player_name[0..11] + '...' if player_name.length > 12
             game_top << "<code>#{player_name} " + ' ' * (MAX_NAME_LENGTH - player_name.length) +
-              player_progress.to_s +
-              ' ' * (MAX_PROGRESS_LENGTH - player_progress.to_s.length) + '</code>' +
-              platinum_trophy.to_s
+                        player_progress.to_s +
+                        ' ' * (MAX_PROGRESS_LENGTH - player_progress.to_s.length) + '</code>' +
+                        platinum_trophy.to_s
           end
 
           game_top.join("\n")

@@ -57,6 +57,9 @@ class Game < Sequel::Model
     player = message[message_type]['from']['username']
     redis = HolyRider::Application.instance.redis
     all_games = (first_games << second_games).flatten.uniq
+    redis.smembers("holy_rider:top:#{player}:games").each do |key|
+      redis.del(key)
+    end
     all_games.each_with_index do |game_title, index|
       redis.setex("holy_rider:top:#{player}:games:#{index + 1}", GAME_CACHE_EXPIRE, game_title)
       redis.sadd("holy_rider:top:#{player}:games", "holy_rider:top:#{player}:games:#{index + 1}")
@@ -72,10 +75,6 @@ class Game < Sequel::Model
 
     game_title = game.split(' ')[0..-2].join(' ')
     game_platform = game.split(' ').last
-    redis.smembers("holy_rider:top:#{player}:games").each do |key|
-      redis.del(key)
-    end
-    redis.del("holy_rider:top:#{player}:games")
     top_game(game_title, platform: game_platform, exact: true) if game_title
   end
 

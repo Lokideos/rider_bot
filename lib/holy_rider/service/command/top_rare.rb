@@ -16,7 +16,7 @@ module HolyRider
         def call
           message = ['<b>Топ редких трофеев:</b>']
           Player.trophy_top_rare.each_with_index do |player_trophies, index|
-            name = player_trophies[:trophy_account] || player_trophies[:telegram_username]
+            name = player_trophies[:telegram_username]
             name = name[0..16] + '...' if name.length > 17
             placement = (index + 1).to_s
             message << "<code>#{placement}" +

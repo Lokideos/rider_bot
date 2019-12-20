@@ -18,6 +18,7 @@ module HolyRider
           message << '/me выводит информацию о запросившем игроке'
           message << '/trophy_ping_on включает оповещения о новых трофеях'
           message << '/trophy_ping_off выключает оповещения о новых трофеях'
+          message << '/last - показывает топ по последней игре, по которой был получен трофей'
           message << '/stats [@telegram_name] - выводит информацию об игроке [telegram_name]'
           return [message.join("\n")] unless player.admin?
 

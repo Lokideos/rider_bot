@@ -10,6 +10,7 @@ module HolyRider
 
         def call
           @player.update_trophy_points
+          @player.update_rare_points
         end
       end
     end

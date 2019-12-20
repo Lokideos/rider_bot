@@ -15,6 +15,7 @@ module HolyRider
           message << '/find [game_title] поиск одной игры'
           message << '/games [game_title] поиск нескольких игр'
           message << '/top выводит топ по трофеям среди игроков'
+          message << '/top_rare выводит топ по редким трофеям среди игроков'
           message << '/me выводит информацию о запросившем игроке'
           message << '/trophy_ping_on включает оповещения о новых трофеях'
           message << '/trophy_ping_off выключает оповещения о новых трофеях'

@@ -23,6 +23,7 @@ require_relative 'command/player_watch_on'
 require_relative 'command/player_watch_off'
 require_relative 'command/top_force_update'
 require_relative 'command/last'
+require_relative 'command/top_rare'
 
 module HolyRider
   module Service
@@ -49,6 +50,7 @@ module HolyRider
         find
         games
         top
+        top_rare
         me
         stats
         trophy_ping_on

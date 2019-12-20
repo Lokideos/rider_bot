@@ -22,6 +22,7 @@ require_relative 'command/trophy_ping_off'
 require_relative 'command/player_watch_on'
 require_relative 'command/player_watch_off'
 require_relative 'command/top_force_update'
+require_relative 'command/last'
 
 module HolyRider
   module Service
@@ -52,6 +53,7 @@ module HolyRider
         stats
         trophy_ping_on
         trophy_ping_off
+        last
       ].concat(CACHED_GAMES).freeze
 
       META_COMMANDS = %w[help].freeze

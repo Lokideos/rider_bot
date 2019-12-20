@@ -36,12 +36,11 @@ class Game < Sequel::Model
         .first
     end
 
-    def find_games(title, limit: 10)
+    def find_games(title)
       where(title: title)
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
-        .limit(limit)
         .map { |record| record.title + " #{record.platform}" }
     end
   end
@@ -49,10 +48,11 @@ class Game < Sequel::Model
   def self.relevant_games(title, message, message_type)
     return unless title.length > 1
 
-    first_games = find_games(/^#{title}.*/i).uniq
+    first_games = find_games(/^#{title}.*/i).uniq[0..9]
     second_games = []
     query_size = first_games.size
-    second_games = find_games(/.*#{title}.*/i, limit: 10 - query_size).uniq if query_size < 10
+    split_title = title.split(' ').join('.*')
+    second_games = find_games(/.*#{split_title}.*/i).uniq[0..(9 - query_size)] if query_size < 10
 
     player = message[message_type]['from']['username']
     redis = HolyRider::Application.instance.redis
@@ -93,7 +93,7 @@ class Game < Sequel::Model
              find_exact_game(title, platform)
            else
              find_game(/^#{title}.*/i, platform: platform) ||
-               find_game(/.*#{title}.*/i, platform: platform)
+               find_game(/.*#{title.split(' ').join('.*')}.*/i, platform: platform)
            end
     return unless game
 

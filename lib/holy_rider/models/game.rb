@@ -78,6 +78,11 @@ class Game < Sequel::Model
     top_game(game_title, platform: game_platform, exact: true) if game_title
   end
 
+  def self.find_last_game
+    game = TrophyAcquisition.last.trophy.game
+    top_game(game.title, platform: game.platform, exact: true)
+  end
+
   # TODO: refactoring needed!
   def self.top_game(title, platform: nil, exact: false)
     return unless title.length > 1

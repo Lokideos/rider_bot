@@ -176,7 +176,14 @@ class Player < Sequel::Model
       },
       games: games,
       trophy_level: trophy_level,
-      level_up_progress: level_up_progress
+      level_up_progress: level_up_progress,
+      unique_platinums: unique_platinum_count
     }
+  end
+
+  def unique_platinum_count
+    platinum_trophy_ids = trophies.select { |trophy| trophy.trophy_type == 'platinum' }.map(&:id)
+    acquisitions = TrophyAcquisition.where(trophy_id: platinum_trophy_ids).all.group_by(&:trophy_id)
+    acquisitions.select { |_trophy_id, player_with_trophy| player_with_trophy.size == 1 }.size
   end
 end

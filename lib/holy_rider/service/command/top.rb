@@ -4,6 +4,9 @@ module HolyRider
   module Service
     module Command
       class Top
+        MAX_NAME_LENGTH = 18
+        MAX_PLACEMENT_LENGTH = 3
+
         def initialize(command, message_type)
           @command = command
           @message_type = message_type
@@ -12,11 +15,14 @@ module HolyRider
         # TODO: refactoring needed
         def call
           message = ['<b>Топ трофеев:</b>']
-          Player.trophy_top.each do |player_trophies|
-            max_name_length = 15
+          Player.trophy_top.each_with_index do |player_trophies, index|
             name = player_trophies[:trophy_account] || player_trophies[:telegram_username]
-            name = name[0..11] + '...' if name.length > 12
-            message << "<code>#{name}" + ' ' * (max_name_length - name.length) +
+            name = name[0..16] + '...' if name.length > 17
+            placement = (index + 1).to_s
+            message << "<code>#{placement}" +
+                       ' ' * (MAX_PLACEMENT_LENGTH - placement.length) +
+                       name +
+                       ' ' * (MAX_NAME_LENGTH - name.length) +
                        " #{player_trophies[:points]}</code>"
           end
 

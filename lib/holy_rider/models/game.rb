@@ -79,7 +79,7 @@ class Game < Sequel::Model
   end
 
   def self.find_last_game
-    game = TrophyAcquisition.last.trophy.game
+    game = TrophyAcquisition.exclude(earned_at: nil).order(:earned_at).last.trophy.game
     top_game(game.title, platform: game.platform, exact: true)
   end
 

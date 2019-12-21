@@ -155,7 +155,7 @@ class Game < Sequel::Model
 
   def self.update_all_progress_caches
     Game.all.each do |game|
-      Game.store_game_top(game)
+      Game.store_game_top(Game.find_exact_game(game.title, game.platform))
     end
   end
 

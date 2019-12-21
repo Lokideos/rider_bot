@@ -3,7 +3,7 @@
 module HolyRider
   module Service
     module Command
-      class TopPlayersForceUpdate
+      class TopGamesForceUpdate
         def initialize(command, message_type)
           @command = command
           @message_type = message_type
@@ -13,8 +13,8 @@ module HolyRider
           player = Player.find(telegram_username: @command[@message_type]['from']['username'])
           return unless player.admin?
 
-          Player.trophy_top_force_update
-          message = ['Топы трофеев были успешно обновлены']
+          Game.update_all_progress_caches
+          message = ['Топы по играм были успешно обновлены']
 
           [message.join("\n")]
         end

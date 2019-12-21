@@ -102,7 +102,7 @@ class Player < Sequel::Model
     redis = HolyRider::Application.instance.redis
     rare_points = trophies.map do |trophy|
       RARE_TROPHIES_WEIGHTS[trophy.trophy_rare][trophy.trophy_type.to_sym]
-    end.inject(0, :+)
+    end.inject(0, :+).to_s.chop
     redis.set("holy_rider:players:trophy_points:rare:#{trophy_account}", rare_points)
 
     rare_points

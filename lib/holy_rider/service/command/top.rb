@@ -17,7 +17,7 @@ module HolyRider
           message = ['<b>Топ трофеев:</b>']
           Player.trophy_top.each_with_index do |player_trophies, index|
             name = player_trophies[:telegram_username]
-            name = name[0..14] + '...' if name.length > 15
+            name = name[0..12] + '..' if name.length > 15
             placement = (index + 1).to_s
             message << "<code>#{placement}" +
                        ' ' * (MAX_PLACEMENT_LENGTH - placement.length) +

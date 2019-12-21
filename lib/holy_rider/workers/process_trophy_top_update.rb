@@ -6,8 +6,9 @@ module HolyRider
       include Sidekiq::Worker
       sidekiq_options queue: :trophies, retry: 2, backtrace: 20
 
-      def perform(player_id)
-        HolyRider::Service::Watcher::UpdateTrophyTopService.new(player_id: player_id).call
+      def perform(player_id, trophy_id)
+        HolyRider::Service::Watcher::UpdateTrophyTopService.new(player_id: player_id,
+                                                                trophy_id: trophy_id).call
       end
     end
   end

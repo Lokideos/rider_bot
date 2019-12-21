@@ -11,10 +11,12 @@ module HolyRider
 
         def call
           game_title = @command[@message_type]['text'].split(' ')[1..-1].join(' ')
-          top = Game.top_game(game_title)
-          return unless top
+          cached_top = Game.top_game(game_title)
+          return unless cached_top
 
-          title = "<a href='#{top[:game].icon_url}'>#{top[:game].title} #{top[:game].platform}</a>"
+          top = Oj.load(cached_top, {})
+          title = "<a href='#{top[:game][:icon_url]}'>" \
+                  "#{top[:game][:title]} #{top[:game][:platform]}</a>"
           game_top = HolyRider::Service::Bot::GameTopService.new(top: top[:progresses]).call
 
           [title, game_top]

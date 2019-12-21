@@ -22,7 +22,7 @@ module HolyRider
           trophy_acquisition.update(earned_at: @trophy_earning_time)
           return if @initial
 
-          HolyRider::Workers::ProcessTrophyTopUpdate.perform_async(@player.id)
+          HolyRider::Workers::ProcessTrophyTopUpdate.perform_async(@player.id, @trophy.id)
 
           # TODO: probably should use ruby built-in url generators for this
           link = prepared_link

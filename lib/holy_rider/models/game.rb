@@ -83,20 +83,14 @@ class Game < Sequel::Model
     top_game(game.title, platform: game.platform, exact: true)
   end
 
-  # TODO: refactoring needed!
-  def self.top_game(title, platform: nil, exact: false)
-    return unless title.length > 1
+  def self.cached_game_top(game)
+    redis = HolyRider::Application.instance.redis
+    redis.get("holy_rider:top:game:#{game.values.dig(:trophy_service_id)}")
+  end
 
-    title = title.strip
-
-    game = if exact
-             find_exact_game(title, platform)
-           else
-             find_game(/^#{title}.*/i, platform: platform) ||
-               find_game(/.*#{title.split(' ').join('.*')}.*/i, platform: platform)
-           end
-    return unless game
-
+  # TODO: this should be on object level - not on class level
+  def self.store_game_top(game)
+    redis = HolyRider::Application.instance.redis
     game_id = game.values.dig(:game_id)
 
     progresses = GameAcquisition.find_progresses(game_id)
@@ -123,10 +117,46 @@ class Game < Sequel::Model
       ].flatten
     end
 
-    {
-      game: game,
-      progresses: grouped_progresses.values.flatten
-    }
+    game_top = Oj.dump({
+                         game: {
+                           icon_url: game.icon_url,
+                           title: game.title,
+                           platform: game.platform
+                         },
+                         progresses: grouped_progresses.values.flatten.map do |progress|
+                                       {
+                                         trophy_account: progress.trophy_account,
+                                         progress: progress.progress,
+                                         platinum_earning_date: progress.platinum_earning_date
+                                       }
+                                     end
+                       }, {})
+    redis.set("holy_rider:top:game:#{game.values.dig(:trophy_service_id)}", game_top)
+
+    game_top
+  end
+
+  # TODO: refactoring needed!
+  def self.top_game(title, platform: nil, exact: false)
+    return unless title.length > 1
+
+    title = title.strip
+
+    game = if exact
+             find_exact_game(title, platform)
+           else
+             find_game(/^#{title}.*/i, platform: platform) ||
+               find_game(/.*#{title.split(' ').join('.*')}.*/i, platform: platform)
+           end
+    return unless game
+
+    cached_game_top(game) || store_game_top(game)
+  end
+
+  def self.update_all_progress_caches
+    Game.all.each do |game|
+      Game.store_game_top(game)
+    end
   end
 
   def self.players_with_platinum_trophy(game_id)

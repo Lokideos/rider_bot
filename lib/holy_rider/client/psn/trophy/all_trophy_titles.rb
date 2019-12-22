@@ -14,7 +14,8 @@ module HolyRider
             @limit = limit
             redis = HolyRider::Application.instance.redis
             @initial = redis.get("holy_rider:watcher:players:initial_load:#{player_name}")
-            @limit = 128 if @initial
+            @game_progress_update = redis.get("holy_rider:watcher:players:progress_update:#{player_name}")
+            @limit = 128 if @initial || @game_progress_update
           end
 
           def request_trophy_list

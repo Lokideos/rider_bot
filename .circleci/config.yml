@@ -1,8 +1,22 @@
 version: 2.1
 jobs:
-  build:
-    docker:
-      - image: circleci/ruby:2.6.3
-    steps:
-      - checkout
-      - run: echo 'Hell world!'
+  one:
+    build:
+      docker:
+        - image: circleci/ruby:2.6.3
+      steps:
+        - checkout
+        - run: echo 'Hell world!'
+  two:
+    build:
+      docker:
+        - image: circleci/ruby:2.6.3
+      steps:
+        - checkout
+        - run: echo 'Hail2U!'
+workflows:
+  version: 2.1
+  test_workflow:
+    jobs:
+      - one
+      - two

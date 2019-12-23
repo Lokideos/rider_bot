@@ -25,6 +25,7 @@ require_relative 'command/top_players_force_update'
 require_relative 'command/top_games_force_update'
 require_relative 'command/last'
 require_relative 'command/top_rare'
+require_relative 'command/player_rename'
 
 module HolyRider
   module Service
@@ -44,6 +45,7 @@ module HolyRider
         player_reload
         player_watch_on
         player_watch_off
+        player_rename
         top_players_force_update
         top_games_force_update
       ].freeze

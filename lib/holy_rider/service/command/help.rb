@@ -39,6 +39,8 @@ module HolyRider
           message << '/player_reload [player_name] - перезагружает игры и трофеи игрока'
           message << '/player_watch_on [player_name] - начинает отслеживать трофеи игрока'
           message << '/player_watch_off [player_name] - перестает отслеживать трофеи игрока'
+          message << '/player_rename [current_player_name] [new_player_name] - меняет имя игрока ' \
+                     'в Телеграме'
           message << '/players - показывает список зарегистрированных игроков'
 
           [message.join("\n")]

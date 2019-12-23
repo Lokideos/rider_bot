@@ -23,6 +23,9 @@ module HolyRider
 
           player.update(telegram_username: new_username)
 
+          Player.trophy_top_force_update
+          Game.update_all_progress_caches
+
           ["Игрок #{username} успешно переименован в #{new_username}"]
         end
       end

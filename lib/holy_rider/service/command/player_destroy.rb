@@ -24,6 +24,9 @@ module HolyRider
           player.remove_all_trophies
           player.delete
 
+          Player.trophy_top_force_update
+          Game.update_all_progress_caches
+
           ["Игрок #{username} был удален"]
         end
       end

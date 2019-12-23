@@ -21,6 +21,7 @@ module HolyRider
 
           player.trophy_acquisitions.each(&:delete)
           player.game_acquisitions.each(&:delete)
+          player.update(on_watch: true)
           player.reload
 
           @redis.set("holy_rider:watcher:players:initial_load:#{player.trophy_account}", 'initial')

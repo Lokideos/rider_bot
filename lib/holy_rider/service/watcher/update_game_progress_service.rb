@@ -45,6 +45,9 @@ module HolyRider
           end
           new_game_progress = updated_game['comparedUser']['progress']
           @game_acquisition.update(progress: new_game_progress)
+
+          # TODO: Probably should move it to separate worker/service
+          Game.store_game_top(Game.find_exact_game(@game.title, @game.platform))
         end
       end
     end

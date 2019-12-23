@@ -12,6 +12,7 @@ module HolyRider
           @trophy_service_id = trophy_service_id
           @initial = initial
           @redis = HolyRider::Application.instance.redis
+          @correct_game_trophies_service = HolyRider::Service::Watcher::CorrectGameTrophiesService
         end
 
         def call
@@ -41,6 +42,17 @@ module HolyRider
           trophies_list = trophies_list_service.new(player_name: @player.trophy_account,
                                                     token: token,
                                                     trophy_service_id: @trophy_service_id).call
+
+          # TODO: here I check for new trophies (typically comes from DLC)
+          # probably should move to separate service altogether
+          all_new_trophy_ids = trophies_list.map { |trophy| trophy['trophyId'] }
+          all_game_trophy_ids = @game.trophies.map(&:trophy_service_id)
+          new_trophy_ids = all_new_trophy_ids - all_game_trophy_ids
+
+          unless new_trophy_ids.empty?
+            @correct_game_trophies_service.new(player: @player, token: token, game: @game,
+                                               new_trophy_ids: new_trophy_ids).call
+          end
 
           earned_trophies = trophies_list.select { |trophy| trophy.dig('comparedUser', 'earned') }
 

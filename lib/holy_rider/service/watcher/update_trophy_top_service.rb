@@ -9,6 +9,7 @@ module HolyRider
           @trophy = Trophy.find(id: trophy_id)
         end
 
+        # TODO: enqueue worker per top update
         def call
           @player.update_trophy_points
           @player.update_rare_points

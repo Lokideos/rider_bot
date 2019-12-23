@@ -21,9 +21,13 @@ module HolyRider
 
           player.trophy_acquisitions.each(&:delete)
           player.game_acquisitions.each(&:delete)
+          player.update(on_watch: true)
           player.reload
 
           @redis.set("holy_rider:watcher:players:initial_load:#{player.trophy_account}", 'initial')
+
+          Player.trophy_top_force_update
+          Game.update_all_progress_caches
 
           ["Данные игрока #{username} будут запрошены заново"]
         end

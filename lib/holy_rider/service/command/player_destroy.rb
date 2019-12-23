@@ -3,10 +3,11 @@
 module HolyRider
   module Service
     module Command
-      class PlayerRename
+      class PlayerDestroy
         def initialize(command, message_type)
           @command = command
           @message_type = message_type
+          @redis = HolyRider::Application.instance.redis
         end
 
         def call
@@ -18,15 +19,15 @@ module HolyRider
           player = Player.find(telegram_username: username)
           return ["Игрок #{username} не найден"] unless player
 
-          new_username = message[2]
-          return ['Введите корректный никнейм'] unless new_username
-
-          player.update(telegram_username: new_username)
+          @redis.srem('holy_rider:watcher:players', player.trophy_account)
+          player.remove_all_games
+          player.remove_all_trophies
+          player.delete
 
           Player.trophy_top_force_update
           Game.update_all_progress_caches
 
-          ["Игрок #{username} успешно переименован в #{new_username}"]
+          ["Игрок #{username} был удален"]
         end
       end
     end

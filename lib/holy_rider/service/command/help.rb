@@ -41,6 +41,7 @@ module HolyRider
           message << '/player_watch_off [player_name] - перестает отслеживать трофеи игрока'
           message << '/player_rename [current_player_name] [new_player_name] - меняет имя игрока ' \
                      'в Телеграме'
+          message << '/player_destroy [player_name] - удаляет игрока и всю информацию о нем'
           message << '/players - показывает список зарегистрированных игроков'
 
           [message.join("\n")]

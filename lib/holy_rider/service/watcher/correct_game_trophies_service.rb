@@ -22,7 +22,7 @@ module HolyRider
             @new_trophy_ids.include? trophy['trophyId']
           end
 
-          HolyRider::Workers::EnqueueProgressUpdaters.perform_async(@game.id, @player.id)
+          HolyRider::Worker::ProcessProgressesUpdate.perform_async(@game.id)
 
           new_trophies.each do |trophy|
             @game.add_trophy(Trophy.create(trophy_name: trophy['trophyName'],

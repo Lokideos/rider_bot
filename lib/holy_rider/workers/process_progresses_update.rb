@@ -2,12 +2,12 @@
 
 module HolyRider
   module Workers
-    class ProcessProgressUpdate
+    class ProcessProgressesUpdate
       include Sidekiq::Worker
       sidekiq_options queue: :trophies, retry: 5, backtrace: 20
 
-      def perform(game_acquisition_id)
-        HolyRider::Service::Watcher::UpdateGameProgressService.new(game_acquisition_id: game_acquisition_id).call
+      def perform(game_id)
+        HolyRider::Service::Watcher::UpdateGameProgressesService.new(game_id).call
       end
     end
   end

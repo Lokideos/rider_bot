@@ -3,6 +3,14 @@
 class Game < Sequel::Model
   Game.plugin :timestamps, update_on_create: true
 
+  # TODO: move all trophy related stuff to goddman trophy models
+  TROPHIES_WEIGHT = {
+    bronze: 15,
+    silver: 30,
+    gold: 90,
+    platinum: 180
+  }.freeze
+
   GAME_CACHE_EXPIRE = 120
 
   one_to_many :game_acquisitions
@@ -161,5 +169,28 @@ class Game < Sequel::Model
 
   def self.players_with_platinum_trophy(game_id)
     find(id: game_id).trophies.find { |trophy| trophy.trophy_type == 'platinum' }&.players
+  end
+
+  # TODO: probably should optimize that
+  def trophy_points_by_player(player)
+    player_trophies_ids = player.trophy_acquisitions.map(&:trophy_id)
+    trophies.select { |trophy| player_trophies_ids.include? trophy.id }.map do |trophy|
+      TROPHIES_WEIGHT[trophy.trophy_type.to_sym]
+    end.inject(0, :+)
+  end
+
+  def total_trophy_points
+    trophies.map do |trophy|
+      TROPHIES_WEIGHT[trophy.trophy_type.to_sym]
+    end.inject(0, :+)
+  end
+
+  def update_top_progresses
+    players.each do |player|
+      progress = (trophy_points_by_player(player).to_f / total_trophy_points.to_f * 100).floor
+      game_acquisitions.find(player_id: player.id).first.update(progress: progress)
+    end
+
+    Game.store_game_top(Game.find_exact_game(title, platform))
   end
 end

@@ -13,6 +13,7 @@ module HolyRider
           @initial = initial
           @redis = HolyRider::Application.instance.redis
           @correct_game_trophies_service = HolyRider::Service::Watcher::CorrectGameTrophiesService
+          @update_trophy_rarity_service = HolyRider::Service::Watcher::UpdateTrophyRarityService
         end
 
         def call
@@ -41,7 +42,8 @@ module HolyRider
           trophies_list_service = HolyRider::Service::PSN::RequestTrophiesListService
           trophies_list = trophies_list_service.new(player_name: @player.trophy_account,
                                                     token: token,
-                                                    trophy_service_id: @trophy_service_id).call
+                                                    trophy_service_id: @trophy_service_id,
+                                                    extended: true).call
 
           # TODO: here I check for new trophies (typically comes from DLC)
           # probably should move to separate service altogether
@@ -68,16 +70,30 @@ module HolyRider
           new_earned_trophies_ids = earned_trophies_ids - player_trophies.map(&:trophy_service_id)
 
           # TODO: get rid of multiline block chaining
-          earned_trophies_dates = earned_trophies.select do |trophy|
+          earned_trophies_data = earned_trophies.select do |trophy|
             new_earned_trophies_ids.include? trophy['trophyId']
           end.map do |trophy|
             {
               trophy_service_id: trophy['trophyId'],
+              trophy_earned_rate: trophy['trophyEarnedRate'],
+              trophy_rare: trophy['trophyRare'],
               earned_at: trophy.dig('comparedUser', 'earnedDate')
             }
           end
 
-          # TODO: find in Sequel better method to do thisb
+          # Update rarity for current trophy, then enqueue current trophy worker
+          unless @initial
+            earned_trophies_data.each do |trophy_data|
+              trophy = @game.trophies.find do |trophy|
+                trophy.trophy_service_id == trophy_data[:trophy_service_id]
+              end
+              @update_trophy_rarity_service.new(trophy,
+                                                trophy_data[:trophy_earned_rate],
+                                                trophy_data[:trophy_rare]).call
+            end
+          end
+
+          # TODO: find in Sequel better method to do this
           new_earned_trophies = new_earned_trophies_ids.map do |trophy_id|
             @game.trophies.find { |trophy| trophy.trophy_service_id == trophy_id }
           end.group_by(&:trophy_type)
@@ -86,7 +102,7 @@ module HolyRider
           end.flatten.compact
 
           sorted_new_trophies.each do |trophy|
-            trophy_earning_time = earned_trophies_dates.find do |trophy_date|
+            trophy_earning_time = earned_trophies_data.find do |trophy_date|
               trophy_date[:trophy_service_id] == trophy.trophy_service_id
             end[:earned_at]
 
@@ -102,6 +118,23 @@ module HolyRider
                                                             trophy.id,
                                                             trophy_earning_time,
                                                             @initial)
+          end
+
+          # Then update rarity for other trophies
+          unless @initial
+            not_earned_trophies_ids = all_new_trophy_ids - new_earned_trophies_ids
+            not_earned_trophies_data = trophies_list.select do |trophy|
+              not_earned_trophies_ids.include? trophy['trophyId']
+            end.map do |trophy|
+              {
+                trophy_service_id: trophy['trophyId'],
+                trophy_earned_rate: trophy['trophyEarnedRate'],
+                trophy_rare: trophy['trophyRare']
+              }
+            end
+
+            HolyRider::Workers::EnqueueTrophyRarityUpdates.perform_async(@game.id,
+                                                                         not_earned_trophies_data)
           end
 
           @redis.srem("holy_rider:watcher:players:initial_load:#{@player.trophy_account}:trophies",

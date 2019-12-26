@@ -45,6 +45,8 @@ jobs:
           echo 'DB_TIMEOUT=30' > .env.test
       - persist_to_workspace:
           root: .
+          paths:
+            - .
 
   run_tests:
     working_directory: ~/repo

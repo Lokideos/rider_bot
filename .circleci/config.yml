@@ -50,8 +50,7 @@ jobs:
           at: ~/repo
       - run: bundle install
       - run: mv config/database.yml.circleci config/database.yml
-      - run: bundle exec gem install rake
-      - run: bundle exec rake db:migrate
+      - run: bundle exec rake db:migrateg
       - run: bundle exec rspec spec
 
 workflows:

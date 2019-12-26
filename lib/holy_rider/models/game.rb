@@ -188,7 +188,9 @@ class Game < Sequel::Model
   def update_top_progresses
     players.each do |player|
       progress = (trophy_points_by_player(player).to_f / total_trophy_points.to_f * 100).floor
-      game_acquisitions.find(player_id: player.id).first.update(progress: progress)
+      game_acquisitions.find do |acquisition|
+        acquisition.player_id ==  player.id
+      end.update(progress: progress)
     end
 
     Game.store_game_top(Game.find_exact_game(title, platform))

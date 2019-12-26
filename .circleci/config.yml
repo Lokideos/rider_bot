@@ -8,7 +8,6 @@ jobs:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
-          DATABASE_URL: "postgresql://root@localhost/my_project_test?pool=5"
     steps:
       - checkout
       - attach_workspace:
@@ -25,9 +24,24 @@ jobs:
           root: .
           paths:
             - vendor/bundle
+  run-tests:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install
+      - run: bundle exec rspec spec
 
 workflows:
   version: 2.1
   build-test-push:
     jobs:
       - bundle-install
+      - run-tests

@@ -5,7 +5,7 @@ jobs:
       - image: circleci/ruby:2.6.3
     steps:
       - checkout
-      - run: echo 'Hell world!'
+      - run: rspec spec
   two:
     docker:
       - image: circleci/ruby:2.6.3

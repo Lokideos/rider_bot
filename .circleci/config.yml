@@ -4,6 +4,11 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
+        environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          DATABASE_URL: "postgresql://root@localhost/my_project_test?pool=5"
     steps:
       - checkout
       - attach_workspace:
@@ -20,16 +25,9 @@ jobs:
           root: .
           paths:
             - vendor/bundle
-  two:
-    docker:
-      - image: circleci/ruby:2.6.3
-    steps:
-      - checkout
-      - run: echo 'Hail2U!'
 
 workflows:
   version: 2.1
-  test_workflow:
+  build-test-push:
     jobs:
       - bundle-install
-      - two

@@ -25,28 +25,6 @@ jobs:
           paths:
             - vendor/bundle
 
-  generate_test_env_file:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/ruby:2.6.3
-        environment:
-          BUNDLE_JOBS: 4
-          BUNDLE_RETRY: 3
-          BUNDLE_PATH: vendor/bundle
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/repo
-      - run: |
-          touch .env.test
-          echo 'DB_HOST=0.0.0.0' >> .env.test
-          echo 'DB_PORT=5432' >> .env.test
-          echo 'DB_USER=postgres' >> .env.test
-          echo 'DB_TIMEOUT=30' >> .env.test
-      - persist_to_workspace:
-          root: .
-          path: .env.test
-
   run_tests:
     working_directory: ~/repo
     docker:
@@ -55,6 +33,10 @@ jobs:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
+          DB_HOST: 0.0.0.0
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_TIMEOUT: 30
     steps:
       - checkout
       - attach_workspace:
@@ -67,8 +49,6 @@ workflows:
   build-test-push:
     jobs:
       - bundle_install
-      - generate_test_env_file
       - run_tests:
           requires:
             - bundle_install
-            - generate_test_env_file

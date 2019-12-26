@@ -55,6 +55,8 @@ jobs:
 
   build_image:
     working_directory: ~/repo
+    docker:
+      - image: circleci/ruby:2.6.3
     steps:
       - checkout
       - run: docker build . -t lokideos/holy-rider:latest

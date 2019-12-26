@@ -53,16 +53,15 @@ jobs:
       - run: bundle exec rake db:migrate
       - run: bundle exec rspec spec
 
-  build_image:
+  build_and_push_image:
     machine: true
     working_directory: ~/repo
     steps:
       - checkout
-#      - setup_remote_docker:
-#          version: 18.06.0-ce
       - run: |
           echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run: docker build . -t lokideos/holy-rider:latest
+      - run: docker push lokideos/holy-rider:latest
 
 workflows:
   version: 2.1
@@ -72,6 +71,6 @@ workflows:
       - run_tests:
           requires:
             - bundle_install
-      - build_image:
+      - build_and_push_image:
           requires:
             - run_tests

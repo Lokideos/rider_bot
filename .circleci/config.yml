@@ -58,8 +58,8 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 18.06.0-ce
+#      - setup_remote_docker:
+#          version: 18.06.0-ce
       - run: |
           echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run: docker build . -t lokideos/holy-rider:latest

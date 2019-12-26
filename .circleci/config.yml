@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  bundle-install:
+  bundle_install:
     working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
@@ -25,7 +25,7 @@ jobs:
           paths:
             - vendor/bundle
 
-  generate-test-env-file:
+  generate_test_env_file:
     working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
@@ -44,7 +44,7 @@ jobs:
           echo 'DB_USER=postgres' > .env.test
           echo 'DB_TIMEOUT=30' > .env.test
 
-  run-tests:
+  run_tests:
     working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
@@ -63,7 +63,9 @@ workflows:
   version: 2.1
   build-test-push:
     jobs:
-      - bundle-install
-      - run-tests:
+      - bundle_install
+      - generate_test_env_file
+      - run_tests:
           requires:
-            - bundle-install
+            - bundle_install
+            - generate_test_env_file

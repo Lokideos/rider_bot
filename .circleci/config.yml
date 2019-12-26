@@ -38,6 +38,11 @@ jobs:
           DB_USER: postgres
           DB_PASSWORD: 12345678
           DB_TIMEOUT: 30
+      - image: circleci/postgres:11.4-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: holy_rider_test
+          POSTGRES_PASSWORD: 12345678
     steps:
       - checkout
       - attach_workspace:

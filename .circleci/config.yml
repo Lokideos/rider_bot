@@ -39,14 +39,13 @@ jobs:
           at: ~/repo
       - run: |
           touch .env.test
-          echo 'DB_HOST=0.0.0.0' > .env.test
-          echo 'DB_PORT=5432' > .env.test
-          echo 'DB_USER=postgres' > .env.test
-          echo 'DB_TIMEOUT=30' > .env.test
+          echo 'DB_HOST=0.0.0.0' >> .env.test
+          echo 'DB_PORT=5432' >> .env.test
+          echo 'DB_USER=postgres' >> .env.test
+          echo 'DB_TIMEOUT=30' >> .env.test
       - persist_to_workspace:
           root: .
-          paths:
-            - .
+          path: .
 
   run_tests:
     working_directory: ~/repo

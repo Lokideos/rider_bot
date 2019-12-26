@@ -8,7 +8,14 @@ jobs:
       - checkout
       - attach_workspace:
         at: ~/repo
+      - restore_cache:
+        keys:
+          - bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
       - run: bundle install
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
       - persist_to_workspace:
           root: .
           paths:

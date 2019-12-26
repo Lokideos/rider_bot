@@ -29,10 +29,10 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
-          environment:
-            BUNDLE_JOBS: 4
-            BUNDLE_RETRY: 3
-            BUNDLE_PATH: vendor/bundle
+        environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
     steps:
       - checkout
       - attach_workspace:
@@ -43,6 +43,8 @@ jobs:
           echo 'DB_PORT=5432' > .env.test
           echo 'DB_USER=postgres' > .env.test
           echo 'DB_TIMEOUT=30' > .env.test
+      - persist_to_workspace:
+          root: .
 
   run_tests:
     working_directory: ~/repo

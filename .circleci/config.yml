@@ -55,11 +55,12 @@ jobs:
 
   build_image:
     working_directory: ~/repo
-    docker:
-      - image: circleci/ruby:2.6.3
     steps:
+      - setup_remote_docker:
+          version: 18.06.0-ce
       - checkout
-      - run: docker build . -t lokideos/holy-rider:latest
+      - run: |
+          docker build . -t lokideos/holy-rider:latest
 
 workflows:
   version: 2.1

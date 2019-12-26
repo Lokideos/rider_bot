@@ -1,20 +1,28 @@
 version: 2.1
 jobs:
-  one:
+  bundle-install:
+    working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
     steps:
       - checkout
-      - run: bundle exec rspec spec
+      - attach_workspace:
+        at: ~/repo
+      - run: bundle install
+      - persist_to_workspace:
+          root: .
+          paths:
+            - vendor/bundle
   two:
     docker:
       - image: circleci/ruby:2.6.3
     steps:
       - checkout
       - run: echo 'Hail2U!'
+
 workflows:
   version: 2.1
   test_workflow:
     jobs:
-      - one
+      - bundle-install
       - two

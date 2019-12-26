@@ -12,10 +12,10 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-        at: ~/repo
+          at: ~/repo
       - restore_cache:
-        keys:
-          - bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
+          keys:
+            - bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
       - run: bundle install
       - save_cache:
           paths:

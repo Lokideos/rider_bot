@@ -54,13 +54,15 @@ jobs:
       - run: bundle exec rspec spec
 
   build_image:
+    machine: true
     working_directory: ~/repo
     steps:
       - checkout
       - setup_remote_docker:
           version: 18.06.0-ce
       - run: |
-          docker build . -t lokideos/holy-rider:latest
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run: docker build . -t lokideos/holy-rider:latest
 
 workflows:
   version: 2.1

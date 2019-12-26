@@ -44,4 +44,6 @@ workflows:
   build-test-push:
     jobs:
       - bundle-install
-      - run-tests
+      - run-tests:
+          requires:
+            - bundle-install

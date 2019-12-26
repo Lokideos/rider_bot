@@ -60,8 +60,10 @@ jobs:
       - checkout
       - run: |
           echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-      - run: docker build . -t lokideos/holy-rider:latest
-      - run: docker push lokideos/holy-rider:latest
+      - run: |
+          docker build . -t $DOCKER_USER/holy-rider:latest
+      - run: |
+          docker push $DOCKER_USER/holy-rider:latest
 
 workflows:
   version: 2.1

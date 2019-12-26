@@ -27,7 +27,7 @@ jobs:
   run-tests:
     working_directory: ~/repo
     docker:
-      - image: circleci/ruby:2.5.1-node-browsers
+      - image: circleci/ruby:2.6.3
         environment:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3

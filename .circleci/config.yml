@@ -53,6 +53,12 @@ jobs:
       - run: bundle exec rake db:migrate
       - run: bundle exec rspec spec
 
+  build_image:
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: docker build . -t lokideos/holy-rider:latest
+
 workflows:
   version: 2.1
   build-test-push:
@@ -61,3 +67,6 @@ workflows:
       - run_tests:
           requires:
             - bundle_install
+      - build_image:
+          requires:
+            - run_tests

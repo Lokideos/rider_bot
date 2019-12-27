@@ -1,20 +1,79 @@
 version: 2.1
 jobs:
-  one:
+  bundle_install:
+    working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
+        environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
     steps:
       - checkout
-      - run: echo 'Hell world!'
-  two:
+      - attach_workspace:
+          at: ~/repo
+      - restore_cache:
+          keys:
+            - bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
+      - run: bundle install
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - vendor/bundle
+
+  run_tests:
+    working_directory: ~/repo
     docker:
       - image: circleci/ruby:2.6.3
+        environment:
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          DB_HOST: 0.0.0.0
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: 12345678
+          DB_TIMEOUT: 30
+          RACK_ENV: test
+      - image: circleci/postgres:11.4-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: holy_rider_test
+          POSTGRES_PASSWORD: 12345678
     steps:
       - checkout
-      - run: echo 'Hail2U!'
+      - attach_workspace:
+          at: ~/repo
+      - run: bundle install
+      - run: mv .circleci/database.yml.test.circleci config/database.yml
+      - run: bundle exec rake db:migrate
+      - run: bundle exec rspec spec
+
+  build_and_push_image:
+    machine: true
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: mv .circleci/database.yml.production.circleci config/database.yml
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run: |
+          docker build . -t $DOCKER_USER/holy-rider:latest
+      - run: |
+          docker push $DOCKER_USER/holy-rider:latest
+
 workflows:
   version: 2.1
-  test_workflow:
+  build-test-push:
     jobs:
-      - one
-      - two
+      - bundle_install
+      - run_tests:
+          requires:
+            - bundle_install
+      - build_and_push_image:
+          requires:
+            - run_tests

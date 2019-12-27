@@ -83,8 +83,10 @@ module HolyRider
         HolyRider::Watcher.application
       when 'web'
         setup_routing_tree
-      else
+      when 'debug'
         binding.pry
+      else
+        p 'No APP_TYPE present'
       end
     end
 

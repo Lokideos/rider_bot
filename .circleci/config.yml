@@ -49,7 +49,7 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: bundle install
-      - run: mv ./database.yml.test.circleci config/database.yml
+      - run: mv .circleci/database.yml.test.circleci config/database.yml
       - run: bundle exec rake db:migrate
       - run: bundle exec rspec spec
 

@@ -1,0 +1,10 @@
+production:
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
+  username: <%= ENV['DB_USER'] %>
+  timeout: <%= ENV['DB_TIMEOUT'] %>
+  reconnect: true
+  password: <%= ENV['DB_PASSWORD'] %>
+  database: holy_rider_production

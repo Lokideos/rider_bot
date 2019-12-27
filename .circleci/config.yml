@@ -58,6 +58,7 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      - run: mv .circleci/database.yml.production.circleci config/database.yml
       - run: |
           echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run: |

@@ -12,7 +12,7 @@ module HolyRider
         def call
           game_title = @command[@message_type]['text'].split(' ')[1..-1].join(' ')
           cached_top = Game.top_game(game_title)
-          return unless cached_top
+          return ['Игра не найдена'] unless cached_top
 
           top = Oj.load(cached_top, {})
           title = "<a href='#{top[:game][:icon_url]}'>" \

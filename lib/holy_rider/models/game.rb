@@ -19,9 +19,9 @@ class Game < Sequel::Model
 
   dataset_module do
     # TODO: try to combine datasets
-    def find_game(title, platform: nil)
+    def find_game(term1, term2: nil, term3: nil, platform: nil)
       unless platform
-        return where(title: title)
+        return where([:title, term1], [:title, term2], [:title, term3])
                .left_join(:game_acquisitions, game_id: :id)
                .order(:last_updated_date)
                .reverse
@@ -29,7 +29,7 @@ class Game < Sequel::Model
                .first
       end
 
-      where(title: title, platform: platform)
+      where([:title, term1], [:title, term2], [:title, term3], [:platform, platform])
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -44,8 +44,8 @@ class Game < Sequel::Model
         .first
     end
 
-    def find_games(title)
-      where(title: title)
+    def find_games(term1, term2: nil, term3: nil)
+      where([:title, term1], [:title, term2], [:title, term3])
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -59,8 +59,12 @@ class Game < Sequel::Model
     first_games = find_games(/^#{title}.*/i).uniq[0..9]
     second_games = []
     query_size = first_games.size
-    split_title = title.split(' ').join('.*')
-    second_games = find_games(/.*#{split_title}.*/i).uniq[0..(9 - query_size)] if query_size < 10
+    split_title = title.split(' ')[0..2]
+    if query_size < 10
+      second_games = find_games(/.*#{split_title[0]}.*/i,
+                                term2: /.*#{split_title[1]}.*/i,
+                                term3: /.*#{split_title[2]}.*/i).uniq[0..(9 - query_size)]
+    end
 
     player = message[message_type]['from']['username']
     redis = HolyRider::Application.instance.redis
@@ -153,8 +157,12 @@ class Game < Sequel::Model
     game = if exact
              find_exact_game(title, platform)
            else
+             split_title = title.split(' ')[0..2]
              find_game(/^#{title}.*/i, platform: platform) ||
-               find_game(/.*#{title.split(' ').join('.*')}.*/i, platform: platform)
+               find_game(/.*#{split_title[0]}.*/i,
+                         term2: /.*#{split_title[1]}.*/i,
+                         term3: /.*#{split_title[2]}.*/i,
+                         platform: platform)
            end
     return unless game
 
@@ -189,7 +197,7 @@ class Game < Sequel::Model
     players.each do |player|
       progress = (trophy_points_by_player(player).to_f / total_trophy_points.to_f * 100).floor
       game_acquisitions.find do |acquisition|
-        acquisition.player_id ==  player.id
+        acquisition.player_id == player.id
       end.update(progress: progress)
     end
 

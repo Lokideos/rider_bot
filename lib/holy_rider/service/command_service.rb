@@ -53,6 +53,7 @@ module HolyRider
       ].freeze
 
       COMMON_COMMANDS = %w[
+        help
         find
         games
         top
@@ -64,9 +65,8 @@ module HolyRider
         last
       ].concat(CACHED_GAMES).freeze
 
-      META_COMMANDS = %w[help].freeze
-
       def initialize(command, message_type)
+        @allowed_chat_ids = [ENV['ADMIN_CHAT_ID'], ENV['PS_CHAT_ID']]
         @admin_chat_id = ENV['ADMIN_CHAT_ID']
         @ps_chat_id = ENV['PS_CHAT_ID']
         @current_chat_id = command[message_type]['chat']['id']
@@ -75,6 +75,8 @@ module HolyRider
       end
 
       def call
+        return unless @allowed_chat_ids.include? @current_chat_id.to_s
+
         return unless Player.find(telegram_username: @command[@message_type]['from']['username'])
 
         command = @command[@message_type]['text'].split(' ').first[1..-1]
@@ -83,15 +85,14 @@ module HolyRider
 
           command = command.split('@').first
         end
-        return unless [COMMON_COMMANDS, ADMIN_COMMANDS, META_COMMANDS].flatten.include? command
+        return unless [COMMON_COMMANDS, ADMIN_COMMANDS].flatten.include? command
 
         command = 'get_game_from_cache' if CACHED_GAMES.include? command
         messages = Kernel.const_get(
           "HolyRider::Service::Command::#{prepared_command(command)}"
         ).new(@command,
               @message_type).call
-        chat_id = ADMIN_COMMANDS.include?(command) ? @admin_chat_id : @ps_chat_id
-        chat_id = @current_chat_id if META_COMMANDS.include? command
+        chat_id = ADMIN_COMMANDS.include?(command) ? @admin_chat_id : @current_chat_id
 
         messages&.each do |message|
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,

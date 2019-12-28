@@ -19,9 +19,9 @@ class Game < Sequel::Model
 
   dataset_module do
     # TODO: try to combine datasets
-    def find_game(title, platform: nil)
+    def find_game(title1, title2: nil, title3: nil, platform: nil)
       unless platform
-        return where(title: title)
+        return where([:title, title1], [:title, title2], [:title, title3])
                .left_join(:game_acquisitions, game_id: :id)
                .order(:last_updated_date)
                .reverse
@@ -29,7 +29,7 @@ class Game < Sequel::Model
                .first
       end
 
-      where(title: title, platform: platform)
+      where([:title, title1], [:title, title2], [:title, title3], [:platform, platform])
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -157,8 +157,12 @@ class Game < Sequel::Model
     game = if exact
              find_exact_game(title, platform)
            else
+             split_title = title.split(' ')[0..2]
              find_game(/^#{title}.*/i, platform: platform) ||
-               find_game(/.*#{title.split(' ').join('.*')}.*/i, platform: platform)
+               find_game(/.*#{split_title[0]}.*/i,
+                         title2: /.*#{split_title[1]}.*/i,
+                         title3: /.*#{split_title[2]}.*/i,
+                         platform: platform)
            end
     return unless game
 

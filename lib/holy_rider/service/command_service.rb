@@ -67,6 +67,7 @@ module HolyRider
       META_COMMANDS = %w[help].freeze
 
       def initialize(command, message_type)
+        @allowed_chat_ids = [ENV['ADMIN_CHAT_ID'], ENV['PS_CHAT_ID']]
         @admin_chat_id = ENV['ADMIN_CHAT_ID']
         @ps_chat_id = ENV['PS_CHAT_ID']
         @current_chat_id = command[message_type]['chat']['id']
@@ -75,6 +76,8 @@ module HolyRider
       end
 
       def call
+        return unless @allowed_chat_ids.include? @current_chat_id.to_s
+
         return unless Player.find(telegram_username: @command[@message_type]['from']['username'])
 
         command = @command[@message_type]['text'].split(' ').first[1..-1]

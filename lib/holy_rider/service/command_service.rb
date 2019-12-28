@@ -53,6 +53,7 @@ module HolyRider
       ].freeze
 
       COMMON_COMMANDS = %w[
+        help
         find
         games
         top
@@ -63,8 +64,6 @@ module HolyRider
         trophy_ping_off
         last
       ].concat(CACHED_GAMES).freeze
-
-      META_COMMANDS = %w[help].freeze
 
       def initialize(command, message_type)
         @allowed_chat_ids = [ENV['ADMIN_CHAT_ID'], ENV['PS_CHAT_ID']]
@@ -86,15 +85,14 @@ module HolyRider
 
           command = command.split('@').first
         end
-        return unless [COMMON_COMMANDS, ADMIN_COMMANDS, META_COMMANDS].flatten.include? command
+        return unless [COMMON_COMMANDS, ADMIN_COMMANDS].flatten.include? command
 
         command = 'get_game_from_cache' if CACHED_GAMES.include? command
         messages = Kernel.const_get(
           "HolyRider::Service::Command::#{prepared_command(command)}"
         ).new(@command,
               @message_type).call
-        chat_id = ADMIN_COMMANDS.include?(command) ? @admin_chat_id : @ps_chat_id
-        chat_id = @current_chat_id if META_COMMANDS.include? command
+        chat_id = ADMIN_COMMANDS.include?(command) ? @admin_chat_id : @current_chat_id
 
         messages&.each do |message|
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,

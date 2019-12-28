@@ -19,9 +19,9 @@ class Game < Sequel::Model
 
   dataset_module do
     # TODO: try to combine datasets
-    def find_game(title1, title2: nil, title3: nil, platform: nil)
+    def find_game(term1, term2: nil, term3: nil, platform: nil)
       unless platform
-        return where([:title, title1], [:title, title2], [:title, title3])
+        return where([:title, term1], [:title, term2], [:title, term3])
                .left_join(:game_acquisitions, game_id: :id)
                .order(:last_updated_date)
                .reverse
@@ -29,7 +29,7 @@ class Game < Sequel::Model
                .first
       end
 
-      where([:title, title1], [:title, title2], [:title, title3], [:platform, platform])
+      where([:title, term1], [:title, term2], [:title, term3], [:platform, platform])
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -44,8 +44,8 @@ class Game < Sequel::Model
         .first
     end
 
-    def find_games(title1, title2: nil, title3: nil)
-      where([:title, title1], [:title, title2], [:title, title3])
+    def find_games(term1, term2: nil, term3: nil)
+      where([:title, term1], [:title, term2], [:title, term3])
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -62,8 +62,8 @@ class Game < Sequel::Model
     split_title = title.split(' ')[0..2]
     if query_size < 10
       second_games = find_games(/.*#{split_title[0]}.*/i,
-                                title2: /.*#{split_title[1]}.*/i,
-                                title3: /.*#{split_title[2]}.*/i).uniq[0..(9 - query_size)]
+                                term2: /.*#{split_title[1]}.*/i,
+                                term3: /.*#{split_title[2]}.*/i).uniq[0..(9 - query_size)]
     end
 
     player = message[message_type]['from']['username']
@@ -160,8 +160,8 @@ class Game < Sequel::Model
              split_title = title.split(' ')[0..2]
              find_game(/^#{title}.*/i, platform: platform) ||
                find_game(/.*#{split_title[0]}.*/i,
-                         title2: /.*#{split_title[1]}.*/i,
-                         title3: /.*#{split_title[2]}.*/i,
+                         term2: /.*#{split_title[1]}.*/i,
+                         term3: /.*#{split_title[2]}.*/i,
                          platform: platform)
            end
     return unless game

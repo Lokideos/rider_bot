@@ -44,8 +44,8 @@ class Game < Sequel::Model
         .first
     end
 
-    def find_games(title)
-      where(title: title)
+    def find_games(title1, title2: nil, title3: nil)
+      where([:title, title1], [:title, title2], [:title, title3])
         .left_join(:game_acquisitions, game_id: :id)
         .order(:last_updated_date)
         .reverse
@@ -59,8 +59,12 @@ class Game < Sequel::Model
     first_games = find_games(/^#{title}.*/i).uniq[0..9]
     second_games = []
     query_size = first_games.size
-    split_title = title.split(' ').join('.*')
-    second_games = find_games(/.*#{split_title}.*/i).uniq[0..(9 - query_size)] if query_size < 10
+    split_title = title.split(' ')[0..2]
+    if query_size < 10
+      second_games = find_games(/.*#{split_title[0]}.*/i,
+                                title2: /.*#{split_title[1]}.*/i,
+                                title3: /.*#{split_title[2]}.*/i).uniq[0..(9 - query_size)]
+    end
 
     player = message[message_type]['from']['username']
     redis = HolyRider::Application.instance.redis
@@ -189,7 +193,7 @@ class Game < Sequel::Model
     players.each do |player|
       progress = (trophy_points_by_player(player).to_f / total_trophy_points.to_f * 100).floor
       game_acquisitions.find do |acquisition|
-        acquisition.player_id ==  player.id
+        acquisition.player_id == player.id
       end.update(progress: progress)
     end
 

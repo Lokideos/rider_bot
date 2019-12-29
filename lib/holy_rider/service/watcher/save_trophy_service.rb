@@ -43,14 +43,14 @@ module HolyRider
 
         # TODO: refactoring needed
         def prepared_link
-          URI.escape("http://#{ENV['FQDN']}/trophy?" \
-                    "player_account=#{@player.trophy_account}&" \
-                    "trophy_title=#{@trophy.trophy_name}&" \
-                    "trophy_description=#{@trophy.trophy_description}&" \
-                    "trophy_type=#{@trophy.trophy_type}&" \
-                    "trophy_rarity=#{@trophy.trophy_earned_rate}%&" \
-                    "icon_url=#{@trophy.trophy_icon_url}&" \
-                    "game_title=#{@trophy.game.title}").to_s
+          "http://#{ENV['FQDN']}/trophy?" \
+            "player_account=#{CGI.escape(@player.trophy_account)}&" \
+            "trophy_title=#{CGI.escape(@trophy.trophy_name)}&" \
+            "trophy_description=#{CGI.escape(@trophy.trophy_description)}&" \
+            "trophy_type=#{CGI.escape(@trophy.trophy_type)}&" \
+            "trophy_rarity=#{CGI.escape(@trophy.trophy_earned_rate)}%&" \
+            "icon_url=#{CGI.escape(@trophy.trophy_icon_url)}&" \
+            "game_title=#{CGI.escape(@trophy.game.title)}"
         end
       end
     end

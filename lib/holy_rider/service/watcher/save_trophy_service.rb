@@ -48,7 +48,7 @@ module HolyRider
             "trophy_title=#{CGI.escape(@trophy.trophy_name)}&" \
             "trophy_description=#{CGI.escape(@trophy.trophy_description)}&" \
             "trophy_type=#{CGI.escape(@trophy.trophy_type)}&" \
-            "trophy_rarity=#{CGI.escape(@trophy.trophy_earned_rate)}%&" \
+            "trophy_rarity=#{CGI.escape(@trophy.trophy_earned_rate)}%25&" \
             "icon_url=#{CGI.escape(@trophy.trophy_icon_url)}&" \
             "game_title=#{CGI.escape(@trophy.game.title)}"
         end

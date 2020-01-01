@@ -12,15 +12,17 @@ module HolyRider
         def call
           player = Player.find(telegram_username: @command[@message_type]['from']['username'])
           message = ['Список команд:']
-          message << '/find [game_title] поиск одной игры'
-          message << '/games [game_title] поиск нескольких игр'
-          message << '/top выводит топ по трофеям среди игроков'
-          message << '/top_rare выводит топ по редким трофеям среди игроков'
-          message << '/me выводит информацию о запросившем игроке'
-          message << '/trophy_ping_on включает оповещения о новых трофеях'
-          message << '/trophy_ping_off выключает оповещения о новых трофеях'
           message << '/last - показывает топ по последней игре, по которой был получен трофей'
+          message << '/top - выводит топ по трофеям среди игроков'
+          message << '/top_rare - выводит топ по редким трофеям среди игроков'
+          message << '/me - выводит информацию о запросившем игроке'
           message << '/stats [@telegram_name] - выводит информацию об игроке [telegram_name]'
+          message << '/find [game_title] - поиск одной игры'
+          message << '/games [game_title] - поиск нескольких игр'
+          message << '/trophy_ping_on - включает оповещения о новых трофеях'
+          message << '/trophy_ping_off - выключает оповещения о новых трофеях'
+          message << '/man_find - выводит мануал по работе с комадной <code>/find</code>'
+          message << '/man_games - выводит мануал по работе с комадной <code>/games</gcode>'
           return [message.join("\n")] unless player.admin?
 
           message << '/hunter_stats - показывает текущих охотников за трофеями'

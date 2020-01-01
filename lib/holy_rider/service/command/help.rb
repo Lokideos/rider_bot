@@ -22,7 +22,7 @@ module HolyRider
           message << '/trophy_ping_on - включает оповещения о новых трофеях'
           message << '/trophy_ping_off - выключает оповещения о новых трофеях'
           message << '/man_find - выводит мануал по работе с комадной <code>/find</code>'
-          message << '/man_games - выводит мануал по работе с комадной <code>/games</gcode>'
+          message << '/man_games - выводит мануал по работе с комадной <code>/games</code>'
           return [message.join("\n")] unless player.admin?
 
           message << '/hunter_stats - показывает текущих охотников за трофеями'

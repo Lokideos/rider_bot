@@ -11,7 +11,7 @@ class Game < Sequel::Model
     platinum: 180
   }.freeze
 
-  GAME_CACHE_EXPIRE = 120
+  GAME_CACHE_EXPIRE = 300
 
   one_to_many :game_acquisitions
   one_to_many :trophies

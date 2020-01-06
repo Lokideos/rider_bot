@@ -14,7 +14,9 @@ module HolyRider
           games_list = Game.relevant_games(game_title, @command, @message_type)
           return unless games_list
 
+          player_username = @command[@message_type]['from']['username']
           message = []
+          message << "@#{player_username}"
           message << '<b>Найденные игры:</b>'
           games_list.each_with_index do |game, index|
             message << "/#{index + 1} <b>#{game}</b>"

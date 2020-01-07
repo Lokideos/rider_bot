@@ -21,6 +21,7 @@ module HolyRider
         loop do
           new_messages = chat_updates
 
+          check_messages_for_deletion
           unless new_messages.any?
             p 'No updates'
             next
@@ -77,6 +78,14 @@ module HolyRider
 
         store_last_processed_message(all_recent_messages.last&.dig('update_id'))
         []
+      end
+
+      def check_messages_for_deletion
+        @redis.smembers('holy_rider:bot:messages:to_delete').each do |message_uid|
+          next if @redis.get("holy_rider:bot:messages:to_delete:expiration:#{message_uid}")
+
+          HolyRider::Workers::ProcessMessageDeletion.perform_async(message_uid)
+        end
       end
     end
   end

@@ -69,6 +69,8 @@ module HolyRider
         man_games
       ].concat(CACHED_GAMES).freeze
 
+      EXPIRE_COMMANDS = %w[games].freeze
+
       def initialize(command, message_type)
         @allowed_chat_ids = [ENV['ADMIN_CHAT_ID'], ENV['PS_CHAT_ID']]
         @admin_chat_id = ENV['ADMIN_CHAT_ID']
@@ -98,9 +100,12 @@ module HolyRider
               @message_type).call
         chat_id = ADMIN_COMMANDS.include?(command) ? @admin_chat_id : @current_chat_id
 
+        to_delete = EXPIRE_COMMANDS.include?(command) ? true : false
+
         messages&.each do |message|
           HolyRider::Service::Bot::SendChatMessageService.new(chat_id: chat_id,
-                                                              message: message).call
+                                                              message: message,
+                                                              to_delete: to_delete).call
         end
       end
 

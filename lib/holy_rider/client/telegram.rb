@@ -36,6 +36,10 @@ module HolyRider
         chat_bot.send_message(chat_id: chat_id, text: message, parse_mode: 'html')
       end
 
+      def delete_message(chat_id:, message_id:)
+        chat_bot.delete_message(chat_id: chat_id, message_id: message_id)
+      end
+
       def send_sticker(chat_id:, sticker:)
         Typhoeus::Request.new(sticker_url(chat_id, sticker), method: :post).run
       end

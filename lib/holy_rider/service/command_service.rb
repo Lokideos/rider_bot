@@ -72,16 +72,21 @@ module HolyRider
       EXPIRE_COMMANDS = %w[games].freeze
 
       def initialize(command, message_type)
-        @allowed_chat_ids = [ENV['ADMIN_CHAT_ID'], ENV['PS_CHAT_ID']]
+        @allowed_public_chat_ids = [ENV['ADMIN_CHAT_ID'], ENV['PS_CHAT_ID']]
         @admin_chat_id = ENV['ADMIN_CHAT_ID']
         @ps_chat_id = ENV['PS_CHAT_ID']
         @current_chat_id = command[message_type]['chat']['id']
+        @chat_type = command[message_type]['chat']['type']
         @command = command
         @message_type = message_type
       end
 
+      # TODO: combine multiple guard clauses to separate checks in methods
       def call
-        return unless @allowed_chat_ids.include? @current_chat_id.to_s
+        unless @allowed_public_chat_ids.include?(@current_chat_id.to_s) ||
+               @chat_type == 'private'
+          return
+        end
 
         return unless Player.find(telegram_username: @command[@message_type]['from']['username'])
 
@@ -92,6 +97,10 @@ module HolyRider
           command = command.split('@').first
         end
         return unless [COMMON_COMMANDS, ADMIN_COMMANDS].flatten.include? command
+
+        if ADMIN_COMMANDS.include? command
+          return unless @current_chat_id.to_s == @admin_chat_id
+        end
 
         command = 'get_game_from_cache' if CACHED_GAMES.include? command
         messages = Kernel.const_get(

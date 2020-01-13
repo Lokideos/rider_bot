@@ -21,6 +21,7 @@ module HolyRider
         @redis = HolyRider::Application.instance.redis
       end
 
+      # TODO: check when bot didn't receive messages for long time (when result array is empty)
       def get_updates
         offset_value = @redis.get('holy_rider:telegram:offset')
         updates = chat_bot.get_updates(offset: offset_value || '')

@@ -37,6 +37,7 @@ require_relative 'workers/enqueue_trophy_rarity_updates'
 require_relative 'workers/process_trophy_rarity_update'
 require_relative 'workers/process_top_updates'
 require_relative 'workers/process_message_deletion'
+require_relative 'workers/process_game_tops_update'
 
 require_relative 'service/bot/chat_update_service'
 require_relative 'service/bot/send_chat_message_service'

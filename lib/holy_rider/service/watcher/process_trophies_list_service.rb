@@ -142,6 +142,8 @@ module HolyRider
 
           if @redis.smembers("holy_rider:watcher:players:initial_load:#{@player.trophy_account}:trophies").empty?
             @redis.del("holy_rider:watcher:players:initial_load:#{@player.trophy_account}")
+            # TODO: update only game tops of this player instead of all game tops
+            HolyRider::Workers::ProcessGameTopsUpdate.perform_async
           end
         end
       end

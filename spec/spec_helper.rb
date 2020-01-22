@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 ENV['RACK_ENV'] = 'test'
+
+require 'rspec-sidekiq'
+require 'fabrication'
+
 require_relative '../config/environment'
 
 Dir['./lib/**/**/*.rb'].sort.each { |f| require f }

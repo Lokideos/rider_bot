@@ -17,7 +17,7 @@ RSpec.describe HolyRider::Workers::ProcessProgressesUpdate do
       allow(service_object).to receive(:call)
     end
 
-    it 'should create service object' do
+    it 'should create service object with correct attributes' do
       expect(service).to receive(:new).with(game_id: game_id)
 
       subject.perform(game_id)

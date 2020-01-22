@@ -18,7 +18,7 @@ RSpec.describe HolyRider::Workers::ProcessTrophyTopUpdate do
       allow(service_object).to receive(:call)
     end
 
-    it 'should create service object' do
+    it 'should create service object with correct attributes' do
       expect(service).to receive(:new).with(player_id: player_id, trophy_id: trophy_id)
 
       subject.perform(player_id, trophy_id)

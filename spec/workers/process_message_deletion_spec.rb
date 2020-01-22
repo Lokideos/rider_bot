@@ -17,7 +17,7 @@ RSpec.describe HolyRider::Workers::ProcessMessageDeletion do
       allow(service_object).to receive(:call)
     end
 
-    it 'should create service object' do
+    it 'should create service object with correct attributes' do
       expect(service).to receive(:new).with(message_uid: message_uid)
 
       subject.perform(message_uid)

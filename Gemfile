@@ -19,6 +19,7 @@ group :development, :test do
   gem 'pry-byebug',      '~> 3.7.0'
   gem 'rspec',           '~> 3.8.0'
   gem 'rack-unreloader', '~> 1.7'
+  gem 'fabrication',     '~> 2.21.0'
 end
 
 group :test do

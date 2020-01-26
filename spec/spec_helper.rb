@@ -20,4 +20,9 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  config.around(:each) do |example|
+    example.run
+    HolyRider::Application.instance.redis.flushdb
+  end
 end

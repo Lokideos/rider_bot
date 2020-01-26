@@ -20,6 +20,7 @@ group :development, :test do
   gem 'rspec',           '~> 3.8.0'
   gem 'rack-unreloader', '~> 1.7'
   gem 'fabrication',     '~> 2.21.0'
+  gem 'mock_redis',      '~> 0.22.0'
 end
 
 group :test do

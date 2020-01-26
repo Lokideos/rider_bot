@@ -8,6 +8,7 @@ require 'sidekiq'
 require 'typhoeus'
 require 'sequel'
 require 'pry-byebug'
+require 'mock_redis'
 
 require_relative 'roda_tree'
 require_relative 'configuration'
@@ -123,6 +124,9 @@ module HolyRider
 
     def setup_redis
       @redis = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'], db: 0)
+      return @redis unless ENV['RACK_ENV'] == 'test'
+
+      @redis = MockRedis.new
     end
 
     def setup_routing_tree

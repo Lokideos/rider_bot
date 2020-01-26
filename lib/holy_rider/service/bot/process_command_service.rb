@@ -10,6 +10,7 @@ module HolyRider
 
         def call
           @commands.each do |command|
+            # TODO: refactoring needed
             HolyRider::Bot::Application::MESSAGE_TYPES.each do |message_type|
               next unless command.key? message_type
 

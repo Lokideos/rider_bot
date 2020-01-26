@@ -13,9 +13,9 @@ RSpec.describe HolyRider::Service::Bot::ProcessCommandService do
 
   context 'with valid attributes' do
     it 'should enqueue HolyRider::Workers::ProcessCommand worker with correct parameters' do
-      expect(worker).to receive(:perform_async).with(valid_command, valid_command.keys.first)
-      expect(worker).to receive(:perform_async).with(valid_edited_command,
-                                                     valid_edited_command.keys.first)
+      input_commands[0..1].each do |command|
+        expect(worker).to receive(:perform_async).with(command, command.keys.first)
+      end
 
       subject.call
     end

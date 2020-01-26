@@ -10,7 +10,7 @@ RSpec.describe HolyRider::Service::Bot::DeleteMessageService do
   let(:chat_id) { 'chat_id' }
   let(:message_id) { 'message_id' }
   let(:message_to_delete_info) { { chat_id: chat_id, message_id: message_id } }
-  let(:application_redis) { HolyRider::Application.instance.redis }
+  let(:redis) { HolyRider::Application.instance.redis }
 
   before do
     allow(telegram_client).to receive(:new).and_return(telegram_client_object)
@@ -24,9 +24,9 @@ RSpec.describe HolyRider::Service::Bot::DeleteMessageService do
 
   context 'info about message to delete exists in redis' do
     before do
-      application_redis.hmset("holy_rider:bot:messages:to_delete:info:#{message_to_delete_uid}",
-                              message_to_delete_info.flatten)
-      application_redis.sadd('holy_rider:bot:messages:to_delete', message_to_delete_uid)
+      redis.hmset("holy_rider:bot:messages:to_delete:info:#{message_to_delete_uid}",
+                  message_to_delete_info.flatten)
+      redis.sadd('holy_rider:bot:messages:to_delete', message_to_delete_uid)
     end
 
     context 'with default client' do
@@ -60,7 +60,7 @@ RSpec.describe HolyRider::Service::Bot::DeleteMessageService do
       subject.call
 
       expect(
-        application_redis.smembers('holy_rider:bot:messages:to_delete')
+        redis.smembers('holy_rider:bot:messages:to_delete')
       ).to_not include(message_to_delete_uid)
     end
 
@@ -68,7 +68,7 @@ RSpec.describe HolyRider::Service::Bot::DeleteMessageService do
       subject.call
 
       expect(
-        application_redis.hgetall("holy_rider:bot:messages:to_delete:info:#{message_to_delete_uid}")
+        redis.hgetall("holy_rider:bot:messages:to_delete:info:#{message_to_delete_uid}")
       ).to be_empty
     end
   end

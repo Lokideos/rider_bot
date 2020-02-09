@@ -12,8 +12,8 @@ class TrophyHunter < Sequel::Model
   end
 
   # TODO: change method name to more appropriate one
-  def full_authentication(ticket_id, code)
-    HolyRider::Service::PSN::InitialAuthenticationService.new(self, ticket_id, code).call
+  def full_authentication(sso_cookie)
+    HolyRider::Service::PSN::InitialAuthenticationService.new(self, sso_cookie).call
   end
 
   def authenticate

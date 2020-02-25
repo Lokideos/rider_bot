@@ -154,19 +154,29 @@ class Game < Sequel::Model
 
     title = title.strip
 
+    # TODO: refactoring needed
     game = if exact
              find_exact_game(title, platform)
            else
-             split_title = title.split(' ')[0..2]
-             find_game(/^#{title}.*/i, platform: platform) ||
-               find_game(/.*#{split_title[0]}.*/i,
-                         term2: /.*#{split_title[1]}.*/i,
-                         term3: /.*#{split_title[2]}.*/i,
-                         platform: platform)
+             game = non_exact_full_title_search(title)
+             unless game
+               split_title = title.split(' ')[0..2]
+               game = find_game(/^#{title}.*/i, platform: platform) ||
+                      find_game(/.*#{split_title[0]}.*/i,
+                                term2: /.*#{split_title[1]}.*/i,
+                                term3: /.*#{split_title[2]}.*/i,
+                                platform: platform)
+             end
+
+             game
            end
     return unless game
 
     cached_game_top(game) || store_game_top(game)
+  end
+
+  def self.non_exact_full_title_search(title)
+    Game.where(title: /^#{title}$/i).left_join(:game_acquisitions, game_id: :id).first
   end
 
   def self.update_all_progress_caches

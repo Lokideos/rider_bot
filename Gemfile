@@ -4,7 +4,7 @@ ruby '2.6.3'
 
 gem "dotenv", '~> 2.7.1'
 gem 'roda',   '~> 3.21.0'
-gem "puma",   '~> 3.12.2'
+gem "puma",   '~> 3.12.3'
 gem 'sequel', '~> 5.21.0'
 gem 'pg',     '~> 1.1.4'
 gem 'telegram-bot', '~> 0.14'

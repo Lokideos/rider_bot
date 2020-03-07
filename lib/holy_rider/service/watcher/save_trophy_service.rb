@@ -43,7 +43,7 @@ module HolyRider
 
         # TODO: refactoring needed
         def prepared_link
-          "http://#{ENV['FQDN']}/trophy?" \
+          "https://#{ENV['FQDN']}/trophy?" \
             "player_account=#{CGI.escape(@player.trophy_account)}&" \
             "trophy_title=#{CGI.escape(@trophy.trophy_name)}&" \
             "trophy_description=#{CGI.escape(@trophy.trophy_description)}&" \

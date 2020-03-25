@@ -46,6 +46,9 @@ GEM
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     oj (3.9.2)
+    parallel (1.19.1)
+    parallel_tests (2.32.0)
+      parallel
     pg (1.1.4)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -115,6 +118,7 @@ DEPENDENCIES
   fabrication (~> 2.21.0)
   mock_redis (~> 0.22.0)
   oj (~> 3.9.2)
+  parallel_tests (~> 2.32)
   pg (~> 1.1.4)
   pry-byebug (~> 3.7.0)
   puma (~> 3.12.4)

@@ -21,6 +21,7 @@ group :development, :test do
   gem 'rack-unreloader', '~> 1.7'
   gem 'fabrication',     '~> 2.21.0'
   gem 'mock_redis',      '~> 0.22.0'
+  gem 'parallel_tests',  '~> 2.32'
 end
 
 group :test do

@@ -17,6 +17,8 @@ module HolyRider
             }
           end
 
+          binding.pry
+
           prepared_threads.each do |thread|
             player = Player.find(message_thread_name: thread[:message_thread_name])
             player.add_message_thread(

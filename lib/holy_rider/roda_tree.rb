@@ -27,11 +27,11 @@ module HolyRider
                })
       end
 
-      r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
-
-      r.on 'sidekiq' do
-        r.run Sidekiq::Web
-      end
+      # r.redirect('/') unless request.params['access_token'] == ENV['ACCESS_TOKEN']
+      #
+      # r.on 'sidekiq' do
+      #   r.run Sidekiq::Web
+      # end
 
       r.on 'welcome' do
         'hello world'
@@ -42,14 +42,14 @@ module HolyRider
       end
 
       # TODO: delete telegram routes before release
-      r.on 'get_updates' do
-        HolyRider::Service::Bot::ChatUpdateService.new.call.to_json
-      end
-
-      r.on 'send_message' do
-        HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
-                                                            message: 'Test').call.to_json
-      end
+      # r.on 'get_updates' do
+      #   HolyRider::Service::Bot::ChatUpdateService.new.call.to_json
+      # end
+      #
+      # r.on 'send_message' do
+      #   HolyRider::Service::Bot::SendChatMessageService.new(chat_id: ENV['PS_CHAT_ID'],
+      #                                                       message: 'Test').call.to_json
+      # end
     end
   end
 end

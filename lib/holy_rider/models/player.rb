@@ -44,6 +44,10 @@ class Player < Sequel::Model
                           join_table: :trophy_acquisitions
 
   dataset_module do
+    def active
+      where(on_watch: true)
+    end
+
     def active_trophy_accounts
       where(on_watch: true).map(:trophy_account)
     end

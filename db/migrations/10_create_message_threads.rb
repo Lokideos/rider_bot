@@ -4,6 +4,7 @@ Sequel.migration do
   up do
     create_table :message_threads do
       primary_key :id
+      foreign_key :player_id
       String :message_thread_id, null: false, unique: true
       String :last_modified_date
       String :last_message_index

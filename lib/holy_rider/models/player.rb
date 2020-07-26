@@ -42,6 +42,7 @@ class Player < Sequel::Model
   many_to_many :games, left_key: :player_id, right_key: :game_id, join_table: :game_acquisitions
   many_to_many :trophies, left_key: :player_id, right_key: :trophy_id,
                           join_table: :trophy_acquisitions
+  one_to_many :message_thread
 
   dataset_module do
     def active

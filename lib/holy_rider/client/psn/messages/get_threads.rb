@@ -5,10 +5,6 @@ module HolyRider
     module PSN
       module Messages
         class GetThreads
-          MESSAGE_THREADS_URL = 'https://es-gmsg.np.community.playstation.net/groupMessaging/v1/threads'
-          MESSAGE_USERS_URL = 'https://es-gmsg.np.community.playstation.net/groupMessaging/v1/users/'
-          SEND_MESSAGE_URL = 'https://es-gmsg.np.community.playstation.net/groupMessaging/v1/messageGroups/'
-
           DEFAULT_FIELDS = %w[threadMembers threadNameDetail threadThumbnailDetail threadProperty
                               latestMessageEventDetail latestTakedownEventDetail
                               newArrivalEventDetail].freeze
@@ -17,7 +13,7 @@ module HolyRider
             @token = token
             @limit = limit
             @offset = offset
-            @endpoint = MESSAGE_THREADS_URL
+            @endpoint = ENV['GET_THREADS_ENDPOINT']
           end
 
           def request_threads_list

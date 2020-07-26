@@ -7,7 +7,7 @@ module HolyRider
       sidekiq_options queue: :screenshots, retry: 5, backtrace: 20
 
       def perform(filename)
-        filepath = Application.root.concat("/tmp/screenshots/#{filename}")
+        filepath = Application.root.concat("/screenshots/#{filename}")
 
         HolyRider::Service::Bot::UploadImageService
           .new(filepath: filepath).call

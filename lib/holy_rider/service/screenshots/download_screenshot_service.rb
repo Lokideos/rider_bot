@@ -15,10 +15,10 @@ module HolyRider
           image_data = @client.new(image_url: image_url, token: @token).get_image_data
           return if image_data.nil?
 
-          FileUtils.mkdir('tmp/screenshots') unless Dir.exist? 'tmp/screenshots'
+          FileUtils.mkdir('screenshots') unless Dir.exist? 'screenshots'
 
           filename = "#{SecureRandom.uuid}.jpeg"
-          File.write("tmp/screenshots/#{filename}", image_data)
+          File.write("screenshots/#{filename}", image_data)
 
           HolyRider::Workers::ProcessImageUpload.perform_async(filename)
         end

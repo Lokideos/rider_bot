@@ -9,6 +9,8 @@ require 'typhoeus'
 require 'sequel'
 require 'pry-byebug'
 require 'mock_redis'
+require 'faraday'
+require 'faraday_middleware'
 
 require_relative 'roda_tree'
 require_relative 'configuration'
@@ -22,6 +24,9 @@ require_relative 'client/psn/auth/access_token'
 require_relative 'client/psn/auth/sso_cookie'
 require_relative 'client/psn/auth/grant_code'
 require_relative 'client/psn/auth/refresh_token'
+require_relative 'client/psn/messages/get_messages'
+require_relative 'client/psn/messages/get_threads'
+require_relative 'client/psn/messages/download_image'
 require_relative 'client/psn/trophy/all_trophy_titles'
 require_relative 'client/psn/trophy/game_trophy_titles'
 require_relative 'client/psn/trophy/user_trophy_summary'
@@ -39,6 +44,10 @@ require_relative 'workers/process_trophy_rarity_update'
 require_relative 'workers/process_top_updates'
 require_relative 'workers/process_message_deletion'
 require_relative 'workers/process_game_tops_update'
+require_relative 'workers/process_screenshot_download_prep'
+require_relative 'workers/process_screenshot_download'
+require_relative 'workers/process_image_upload'
+require_relative 'workers/process_file_deletion'
 
 require_relative 'service/bot/chat_update_service'
 require_relative 'service/bot/send_chat_message_service'
@@ -47,6 +56,7 @@ require_relative 'service/bot/game_top_service'
 require_relative 'service/bot/process_command_service'
 require_relative 'service/bot/process_mention_service'
 require_relative 'service/bot/delete_message_service'
+require_relative 'service/bot/upload_image_service'
 require_relative 'service/psn/initial_authentication_service'
 require_relative 'service/psn/update_access_token_service'
 require_relative 'service/psn/request_updates_service'
@@ -61,6 +71,12 @@ require_relative 'service/watcher/update_trophy_top_service'
 require_relative 'service/watcher/correct_game_trophies_service'
 require_relative 'service/watcher/update_game_progress_service'
 require_relative 'service/watcher/update_trophy_rarity_service'
+require_relative 'service/screenshots/process_screenshots_service'
+require_relative 'service/screenshots/prepare_download_service'
+require_relative 'service/screenshots/process_messages_service'
+require_relative 'service/screenshots/download_screenshot_service'
+require_relative 'service/screenshots/create_message_threads_service'
+
 require_relative 'service/command_service'
 
 module HolyRider
@@ -68,6 +84,10 @@ module HolyRider
     include Singleton
 
     attr_reader :db, :redis, :app_type
+
+    def self.root
+      File.expand_path('../..', __dir__)
+    end
 
     def initialize
       @db = nil

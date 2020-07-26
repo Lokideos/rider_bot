@@ -4,9 +4,10 @@ module HolyRider
   module Service
     module Screenshots
       class DownloadScreenshotService
-        def initialize(message:, token:, client: nil)
+        def initialize(message:, token:, sender_name:, client: nil)
           @message = message
           @token = token
+          @sender_name = sender_name
           @client = client || HolyRider::Client::PSN::Messages::DownloadImage
         end
 
@@ -20,7 +21,7 @@ module HolyRider
           filename = "#{SecureRandom.uuid}.jpeg"
           File.write("screenshots/#{filename}", image_data)
 
-          HolyRider::Workers::ProcessImageUpload.perform_async(filename)
+          HolyRider::Workers::ProcessImageUpload.perform_async(@sender_name, filename)
         end
       end
     end

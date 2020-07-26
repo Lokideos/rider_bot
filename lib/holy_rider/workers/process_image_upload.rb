@@ -6,11 +6,11 @@ module HolyRider
       include Sidekiq::Worker
       sidekiq_options queue: :screenshots, retry: 5, backtrace: 20
 
-      def perform(filename)
+      def perform(player_name, filename)
         filepath = Application.root.concat("/screenshots/#{filename}")
 
         HolyRider::Service::Bot::UploadImageService
-          .new(filepath: filepath).call
+          .new(player_name: player_name, filepath: filepath).call
 
         HolyRider::Workers::ProcessFileDeletion.perform_async(filepath)
       end

@@ -46,7 +46,7 @@ module HolyRider
         def filtered_threads(threads)
           threads.select do |thread|
             thread['threadMembers'].any? do |messenger_info|
-              Player.active.find(trophy_account: messenger_info['onlineId'])
+              Player.active.find(message_thread_name: messenger_info['onlineId'])
             end
           end
         end

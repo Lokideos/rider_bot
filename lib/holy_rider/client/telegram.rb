@@ -44,12 +44,33 @@ module HolyRider
         Typhoeus::Request.new(sticker_url(chat_id, sticker), method: :post).run
       end
 
+      def send_image(chat_id:, filepath:)
+        payload = { photo: Faraday::UploadIO.new(File.open(filepath), 'image/jpeg') }
+
+        build_connection.post("/bot#{@chat_bot.token}/sendPhoto?chat_id=#{chat_id}",
+                              payload) do |request|
+          request.headers['Content-Type'] = 'multipart/form-data'
+        end
+      end
+
       private
 
       def sticker_url(chat_id, sticker)
         "https://api.telegram.org/bot#{@chat_bot.token}/sendSticker?" \
           "chat_id=#{chat_id}&" \
           "sticker=#{sticker}"
+      end
+
+      def file_url(chat_id)
+        "https://api.telegram.org/bot#{@chat_bot.token}/savePhoto?chat_id=#{chat_id}"
+      end
+
+      def build_connection
+        @connection ||= Faraday.new('https://api.telegram.org/') do |conn|
+          conn.request :multipart
+          conn.request :url_encoded
+          conn.adapter :typhoeus
+        end
       end
     end
   end

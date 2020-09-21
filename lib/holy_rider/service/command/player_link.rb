@@ -20,7 +20,9 @@ module HolyRider
           player = Player.find(telegram_username: username)
           return unless player
 
-          player.update(trophy_account: trophy_account, on_watch: true)
+          player.update(trophy_account: trophy_account,
+                        message_thread_name: trophy_account,
+                        on_watch: true)
           @redis.sadd('holy_rider:watcher:players', trophy_account)
           @redis.set("holy_rider:watcher:players:initial_load:#{trophy_account}", 'initial')
 

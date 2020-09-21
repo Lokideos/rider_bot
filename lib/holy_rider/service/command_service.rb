@@ -29,6 +29,7 @@ require_relative 'command/player_rename'
 require_relative 'command/player_destroy'
 require_relative 'command/man_find'
 require_relative 'command/man_games'
+require_relative 'command/man_screenshot'
 
 module HolyRider
   module Service
@@ -67,6 +68,7 @@ module HolyRider
         last
         man_find
         man_games
+        man_screenshot
       ].concat(CACHED_GAMES).freeze
 
       EXPIRE_COMMANDS = %w[games].freeze

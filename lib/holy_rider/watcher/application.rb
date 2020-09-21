@@ -16,6 +16,7 @@ module HolyRider
         @new_games_service = HolyRider::Service::Watcher::NewGamesService
         @link_games_service = HolyRider::Service::Watcher::LinkGamesService
         @new_trophies_service = HolyRider::Service::Watcher::NewTrophiesService
+        @process_screenshots_service = HolyRider::Service::Screenshots::ProcessScreenshotsService
         @redis.del('holy_rider:watcher:players')
         @redis.del('holy_rider:watcher:hunters')
         @redis.del('holy_rider:watcher:hunters:tainted')
@@ -89,6 +90,8 @@ module HolyRider
                                       updates: psn_updates,
                                       hunter_name: hunter_name).call
             p "Watcher: player #{player} status checked"
+            @process_screenshots_service.new(token: token).call
+            p 'Watcher: new screenshots processed'
           end
 
           p 'Watcher: all players checked'
